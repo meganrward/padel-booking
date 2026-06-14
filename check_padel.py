@@ -18,20 +18,22 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # iMessage recipients — each entry specifies which alert types they receive.
 # alert types: "lessons", "train_and_play", "courts"
 IMESSAGE_TARGETS = [
-    {"target": "wardmegan98@gmail.com", "types": ["lessons", "train_and_play", "courts"]},
-    {"target": "adam.selcon@googlemail.com",         "types": ["courts"]},  # friend — courts only; replace number
+    {"target": "wardmegan98@gmail.com", "types": ["train_and_play", "courts"]},
+    {"target": "+447711916416", "types": ["lessons"]},
+    {"target": "avinashguptaa01908@googlemail.com", "types": ["lessons"]},
+    {"target": "adam.selcon@googlemail.com",         "types": ["courts, lessons"]},  # friend — courts only; replace number
 ]
 
 NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone notifications
 
 # Toggle alert types on/off independently
-NOTIFY_LESSONS        = False  # private class + SPC tournaments — paused
+NOTIFY_LESSONS        = True  # private class + SPC tournaments — paused
 NOTIFY_TRAIN_AND_PLAY = True
 NOTIFY_COURTS         = True
 
 WEEKS_AHEAD = 6   # check current week + this many ahead (last API week is always excluded)
-ACTIVITY_FILTERS = ["private class", "train and play blue", "spc silver 500 tournament"]
-EXCLUDED_INSTRUCTORS = ["lucas burgess", "richard pratt"]
+ACTIVITY_FILTERS = ["private class", "train and play blue"]
+EXCLUDED_INSTRUCTORS = ["lucas burgess", "richard pratt", "megan  ward" ]
 STATE_FILE = os.path.join(SCRIPT_DIR, "notified_slots.json")
 LOG_FILE = os.path.join(SCRIPT_DIR, "padel_checker.log")
 
