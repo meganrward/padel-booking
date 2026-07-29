@@ -15994,3 +15994,36 @@ FileNotFoundError: [Errno 2] No such file or directory: '/opt/homebrew/bin/termi
 [2026-07-29 15:22]   NOTIFY (court): Court 7: London Independent Hospital — Tue 08 Sep, 19:30–20:30 (60 min)
 [2026-07-29 15:22]   NOTIFY (court): Court 8 — Tue 08 Sep, 20:00–21:30 (90 min)
 [2026-07-29 15:22]   Done — notified for 7 new activity slot(s), 82 new court slot(s).
+[2026-07-29 16:59]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=6f9799e627: <urlopen error timed out>
+[2026-07-29 16:59]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=8e5ab55f51: <urlopen error timed out>
+[2026-07-29 17:00]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=5858b545f6: <urlopen error timed out>
+[2026-07-29 17:00]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=e446b6cd3c: <urlopen error timed out>
+[2026-07-29 17:01]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=d3c8f4e364: <urlopen error timed out>
+[2026-07-29 17:01]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=687045445e: <urlopen error timed out>
+[2026-07-29 17:01]   Detail page fetch failed for https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=70153d81c1: <urlopen error timed out>
+[2026-07-29 17:21] Checking availability...
+[2026-07-29 17:21]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-29 17:21]   8 available target slot(s) (before detail checks)
+[2026-07-29 17:21]   Skip (wrong level): Train and Play Blue — Friday 09:00
+[2026-07-29 17:21]   Skip (excluded instructor): Private Class — Monday 09:30
+[2026-07-29 17:21]   Skip (excluded instructor): Train and Play Blue — Tuesday 15:00
+[2026-07-29 17:21]   Skip (wrong level): Train and Play Blue — Tuesday 10:00
+[2026-07-29 17:21]   Skip (excluded instructor): Train and Play Blue — Wednesday 11:00
+[2026-07-29 17:21]   Skip (wrong level): Train and Play Blue — Wednesday 10:00
+[2026-07-29 17:21]   Checking court hire availability...
+[2026-07-29 17:21]   NOTIFY (court): Court 8 — Thu 30 Jul, 19:30–21:30 (120 min)
+[2026-07-29 17:22]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 01 Aug, 21:00–22:30 (90 min)
+[2026-07-29 17:22]   Court grid fetch failed (19/8/2026): <urlopen error timed out>
+[2026-07-29 17:22]   Done — notified for 0 new activity slot(s), 2 new court slot(s).
+[2026-07-29 17:42] Checking availability...
+[2026-07-29 17:42]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-29 17:42]   8 available target slot(s) (before detail checks)
+[2026-07-29 17:42]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Friday 09:00
+[2026-07-29 17:42]   NOTIFY: Private Class — Mon 03 Aug, 09:30–10:30 (1 free)
+[2026-07-29 17:42]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-29 17:42]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-29 17:42]   NOTIFY: Train and Play Blue — Wed 26 Aug, 11:00–13:00 (1 free)
+[2026-07-29 17:42]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-29 17:42]   Checking court hire availability...
+[2026-07-29 17:43]   Court grid fetch failed (27/8/2026): <urlopen error timed out>
+[2026-07-29 17:43]   Done — notified for 2 new activity slot(s), 0 new court slot(s).

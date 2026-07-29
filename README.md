@@ -57,4 +57,25 @@ python3 ~/personal/padel-booking/check_padel.py
 
 - `notified_slots.json` tracks which slots you've already been alerted about so you don't get duplicate notifications. Keep this file — if it's missing the script will re-notify for all currently open slots.
 - The script uses the system `python3` (no virtualenv needed, stdlib only).
-- Alert recipients and types are configured at the top of `check_padel.py` in `IMESSAGE_TARGETS`.
+- Alert recipients and types are configured in `people.json`, loaded by `check_padel.py` at startup. Edit the file directly, or use the admin UI below.
+
+## Admin UI (manage recipients)
+
+A local React + FastAPI admin app for adding people and toggling their alert types (Courts / Lessons / Train & Play) and instructor filters, without hand-editing `people.json`. It only needs to be running while you're actively editing — `check_padel.py`'s scheduled runs read `people.json` directly and don't need the UI or backend running.
+
+```bash
+# Backend (http://localhost:8000)
+cd backend
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/uvicorn main:app --reload
+
+# Frontend (http://localhost:5173), in another terminal
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173 in a browser. Changes save immediately to `people.json`.
+
+The instructor dropdown is seeded from `instructors.json`, generated once via `python3 scripts/fetch_instructors.py` by crawling the current schedule (there's no bulk "list instructors" API — names only appear on individual booking detail pages). Rerun that script manually if the coaching roster changes.

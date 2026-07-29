@@ -21,13 +21,13 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 #     "excluded_instructors": [...]  — skip this target for these instructors (defaults to EXCLUDED_INSTRUCTORS)
 #     "included_instructors": [...]  — if set, ONLY notify this target for these instructors,
 #                                       ignoring excluded_instructors entirely
-IMESSAGE_TARGETS = [
-    {"target": "wardmegan98@gmail.com", "types": ["train_and_play", "courts", "lessons"]},
-    # {"target": "+447711916416", "types": ["lessons"]},
-    {"target": "avinashguptaa01908@googlemail.com", "types": ["lessons"],
-     "included_instructors": ["pau monclus", "dylan du plooy"]},
-    {"target": "adam.selcon@googlemail.com", "types": ["courts", "lessons"]},
-]
+# Managed via people.json (edit directly, or use the admin UI in backend/ + frontend/).
+def load_targets():
+    path = os.path.join(SCRIPT_DIR, "people.json")
+    with open(path) as f:
+        return json.load(f)
+
+IMESSAGE_TARGETS = load_targets()
 
 NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone notifications
 
@@ -99,10 +99,6 @@ def is_target_activity(name):
     return any(f in n for f in ACTIVITY_FILTERS)
 
 
-def is_train_and_play(name):
-    return "train and play blue" in name.strip().lower()
-
-
 def get_activity_alert_type(name):
     n = name.strip().lower()
     if "train and play blue" in n:
@@ -146,8 +142,12 @@ def target_allows_instructor(html, target):
     return not instructor_matches(html, excluded)
 
 
-def is_level_suitable(html):
-    return "4,25" in html
+def target_level_suitable(html, target):
+    """Per-target level filter for train_and_play: only applies if the target has a "level" set."""
+    level = target.get("level")
+    if level is None:
+        return True
+    return f"{float(level):.2f}".replace(".", ",") in html
 
 
 def get_date_from_link(link):
@@ -354,8 +354,13 @@ def send_imessage(text, targets):
             escaped = text.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
             script = f"""
 tell application "Messages"
-    set s to 1st service whose service type = iMessage
-    set b to buddy "{target}" of s
+    try
+        set s to 1st service whose service type = iMessage
+        set b to buddy "{target}" of s
+    on error
+        set s to 1st service whose service type = SMS
+        set b to buddy "{target}" of s
+    end try
     send "{escaped}" to b
 end tell
 """
@@ -418,17 +423,16 @@ def main():
 
         eligible_targets = [
             r["target"] for r in IMESSAGE_TARGETS
-            if alert_type in r.get("types", []) and target_allows_instructor(html, r)
+            if alert_type in r.get("types", [])
+            and target_allows_instructor(html, r)
+            and (alert_type != "train_and_play" or target_level_suitable(html, r))
         ]
+
+        if not eligible_targets:
+            log(f"  Skip (no eligible recipients — instructor/level filters): {name} — {slot.get('DiaDeLaSemana')} {slot.get('StrHoraInicio')}")
+            continue
+
         globally_excluded = is_excluded_instructor(html)
-
-        if globally_excluded and not eligible_targets:
-            log(f"  Skip (excluded instructor): {name} — {slot.get('DiaDeLaSemana')} {slot.get('StrHoraInicio')}")
-            continue
-
-        if is_train_and_play(name) and not is_level_suitable(html):
-            log(f"  Skip (wrong level): {name} — {slot.get('DiaDeLaSemana')} {slot.get('StrHoraInicio')}")
-            continue
 
         t_start = slot.get("StrHoraInicio", "")
         t_end = slot.get("StrHoraFin", "")
