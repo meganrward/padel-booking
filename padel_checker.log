@@ -15753,3 +15753,244 @@ Traceback (most recent call last):
     return self._sslobj.read(len, buffer)
 socket.timeout: The read operation timed out
 
+[2026-07-29 15:10] Checking availability...
+[2026-07-29 15:10]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026, 07/09/2026
+[2026-07-29 15:11]   16 available target slot(s) (before detail checks)
+[2026-07-29 15:11]   Skip (wrong level): Train and Play Blue — Friday 09:00
+[2026-07-29 15:11]   NOTIFY: Private Class — Sat 01 Aug, 10:00–11:00 (1 free)
+[2026-07-29 15:11] ERROR:
+Traceback (most recent call last):
+  File "/Users/meganward/projects/padel-booking/check_padel.py", line 466, in <module>
+    main()
+    ~~~~^^
+  File "/Users/meganward/projects/padel-booking/check_padel.py", line 445, in main
+    send_mac_notification("Padel Slot Available!", subtitle, message, url=link)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/meganward/projects/padel-booking/check_padel.py", line 343, in send_mac_notification
+    subprocess.run(cmd, capture_output=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/homebrew/bin/terminal-notifier'
+
+[2026-07-29 15:14] Checking availability...
+[2026-07-29 15:14]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026, 07/09/2026
+[2026-07-29 15:14]   16 available target slot(s) (before detail checks)
+[2026-07-29 15:14]   Skip (wrong level): Train and Play Blue — Friday 09:00
+[2026-07-29 15:14]   NOTIFY: Private Class — Sat 01 Aug, 10:00–11:00 (1 free)
+[2026-07-29 15:15]   Skip (excluded instructor): Private Class — Monday 09:30
+[2026-07-29 15:15]   NOTIFY: Private Class — Sun 09 Aug, 11:00–12:00 (1 free)
+[2026-07-29 15:15]   Skip (excluded instructor): Train and Play Blue — Tuesday 15:00
+[2026-07-29 15:15]   Skip (wrong level): Train and Play Blue — Tuesday 10:00
+[2026-07-29 15:15]   Skip (excluded instructor): Train and Play Blue — Wednesday 11:00
+[2026-07-29 15:15]   Skip (wrong level): Train and Play Blue — Wednesday 10:00
+[2026-07-29 15:15]   NOTIFY: Train and Play Blue — Sun 06 Sep, 14:00–16:00 (3 free)
+[2026-07-29 15:15]   NOTIFY: Train and Play Blue — Thu 10 Sep, 12:00–14:00 (4 free)
+[2026-07-29 15:15]   NOTIFY: Private Class — Fri 11 Sep, 12:00–13:00 (1 free)
+[2026-07-29 15:15]   Skip (excluded instructor): Private Class — Friday 12:00
+[2026-07-29 15:15]   NOTIFY: Private Class — Fri 11 Sep, 13:00–14:00 (1 free)
+[2026-07-29 15:15]   NOTIFY: Private Class — Fri 11 Sep, 14:00–15:00 (1 free)
+[2026-07-29 15:15]   Skip (excluded instructor): Private Class — Wednesday 16:00
+[2026-07-29 15:15]   Skip (excluded instructor): Private Class — Thursday 17:00
+[2026-07-29 15:15]   Checking court hire availability...
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 01 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 2: Joma Padel — Sun 02 Aug, 20:30–22:00 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 3: Terra Rossa — Sun 02 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 1 — Sun 02 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 6: Estrella Damm — Sun 02 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 7: London Independent Hospital — Sun 02 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 8 — Sun 02 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Tue 04 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 2: Joma Padel — Sat 08 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 3: Terra Rossa — Sat 08 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 4 — Sat 08 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 1 — Sat 08 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 08 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 5 — Sat 08 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 6: Estrella Damm — Sat 08 Aug, 20:00–23:00 (180 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 8 — Sat 08 Aug, 19:00–21:30 (150 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 2: Joma Padel — Sun 09 Aug, 20:00–22:00 (120 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 4 — Sun 09 Aug, 21:00–22:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 1 — Sun 09 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Sun 09 Aug, 18:00–20:00 (120 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 5 — Sun 09 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 10 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 2: Joma Padel — Tue 11 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 3: Terra Rossa — Wed 12 Aug, 20:00–23:00 (180 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 6: Estrella Damm — Wed 12 Aug, 21:00–23:00 (120 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 8 — Wed 12 Aug, 21:00–23:00 (120 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Fri 14 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 3: Terra Rossa — Sat 15 Aug, 18:00–20:00 (120 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 4 — Sat 15 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 15 Aug, 18:00–19:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 15 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 7: London Independent Hospital — Sat 15 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 8 — Sat 15 Aug, 19:00–21:30 (150 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 2: Joma Padel — Sun 16 Aug, 20:30–22:00 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 3: Terra Rossa — Sun 16 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 4 — Sun 16 Aug, 21:00–22:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 1 — Sun 16 Aug, 20:30–22:00 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Sun 16 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 5 — Sun 16 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 6: Estrella Damm — Sun 16 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 7: London Independent Hospital — Sun 16 Aug, 18:30–20:30 (120 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 8 — Sun 16 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 17 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:15]   NOTIFY (court): Court 1 — Tue 18 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 20 Aug, 20:00–21:00 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 5 — Thu 20 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Fri 21 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 5 — Fri 21 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 2: Joma Padel — Sun 23 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 4 — Sun 23 Aug, 19:00–20:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 1 — Sun 23 Aug, 18:30–20:30 (120 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Sun 23 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 5 — Sun 23 Aug, 21:00–22:00 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 24 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 6: Estrella Damm — Mon 24 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 5 — Wed 26 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 6: Estrella Damm — Wed 26 Aug, 20:30–23:00 (150 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 7: London Independent Hospital — Wed 26 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 27 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 5 — Fri 28 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 7: London Independent Hospital — Fri 28 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 3: Terra Rossa — Mon 31 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 1 — Mon 31 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 31 Aug, 18:30–19:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 31 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 5 — Mon 31 Aug, 19:00–20:00 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 6: Estrella Damm — Mon 31 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 7: London Independent Hospital — Mon 31 Aug, 19:00–20:00 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 2: Joma Padel — Tue 01 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Tue 01 Sep, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 4 — Wed 02 Sep, 21:00–23:00 (120 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 8 — Wed 02 Sep, 21:00–23:00 (120 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 03 Sep, 20:00–22:30 (150 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 8 — Thu 03 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 4 — Sun 06 Sep, 21:00–22:00 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 1 — Sun 06 Sep, 19:00–20:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 8 — Sun 06 Sep, 19:00–20:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 07 Sep, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 2: Joma Padel — Tue 08 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 1 — Tue 08 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 9: Roofed Outdoor — Tue 08 Sep, 21:00–22:30 (90 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 6: Estrella Damm — Tue 08 Sep, 19:30–20:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 7: London Independent Hospital — Tue 08 Sep, 19:30–20:30 (60 min)
+[2026-07-29 15:16]   NOTIFY (court): Court 8 — Tue 08 Sep, 20:00–21:30 (90 min)
+[2026-07-29 15:21] Checking availability...
+[2026-07-29 15:21]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026, 07/09/2026
+[2026-07-29 15:21]   16 available target slot(s) (before detail checks)
+[2026-07-29 15:21]   Skip (wrong level): Train and Play Blue — Friday 09:00
+[2026-07-29 15:21]   NOTIFY: Private Class — Sat 01 Aug, 10:00–11:00 (1 free)
+[2026-07-29 15:21]   Skip (excluded instructor): Private Class — Monday 09:30
+[2026-07-29 15:21]   NOTIFY: Private Class — Sun 09 Aug, 11:00–12:00 (1 free)
+[2026-07-29 15:21]   Skip (excluded instructor): Train and Play Blue — Tuesday 15:00
+[2026-07-29 15:21]   Skip (wrong level): Train and Play Blue — Tuesday 10:00
+[2026-07-29 15:21]   Skip (excluded instructor): Train and Play Blue — Wednesday 11:00
+[2026-07-29 15:21]   Skip (wrong level): Train and Play Blue — Wednesday 10:00
+[2026-07-29 15:21]   NOTIFY: Train and Play Blue — Sun 06 Sep, 14:00–16:00 (3 free)
+[2026-07-29 15:21]   NOTIFY: Train and Play Blue — Thu 10 Sep, 12:00–14:00 (4 free)
+[2026-07-29 15:21]   NOTIFY: Private Class — Fri 11 Sep, 12:00–13:00 (1 free)
+[2026-07-29 15:21]   Skip (excluded instructor): Private Class — Friday 12:00
+[2026-07-29 15:21]   NOTIFY: Private Class — Fri 11 Sep, 13:00–14:00 (1 free)
+[2026-07-29 15:21]   NOTIFY: Private Class — Fri 11 Sep, 14:00–15:00 (1 free)
+[2026-07-29 15:21]   Skip (excluded instructor): Private Class — Wednesday 16:00
+[2026-07-29 15:21]   Skip (excluded instructor): Private Class — Thursday 17:00
+[2026-07-29 15:21]   Checking court hire availability...
+[2026-07-29 15:21]   Court grid fetch failed (1/8/2026): <urlopen error timed out>
+[2026-07-29 15:21]   NOTIFY (court): Court 2: Joma Padel — Sun 02 Aug, 20:30–22:00 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 3: Terra Rossa — Sun 02 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 1 — Sun 02 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 6: Estrella Damm — Sun 02 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 7: London Independent Hospital — Sun 02 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 8 — Sun 02 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Tue 04 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 2: Joma Padel — Sat 08 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 3: Terra Rossa — Sat 08 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 4 — Sat 08 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 1 — Sat 08 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 08 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 5 — Sat 08 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 6: Estrella Damm — Sat 08 Aug, 20:00–23:00 (180 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 8 — Sat 08 Aug, 19:00–21:30 (150 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 2: Joma Padel — Sun 09 Aug, 20:00–22:00 (120 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 4 — Sun 09 Aug, 21:00–22:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 1 — Sun 09 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Sun 09 Aug, 18:00–20:00 (120 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 5 — Sun 09 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 10 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 2: Joma Padel — Tue 11 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 3: Terra Rossa — Wed 12 Aug, 20:00–23:00 (180 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 6: Estrella Damm — Wed 12 Aug, 21:00–23:00 (120 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 8 — Wed 12 Aug, 21:00–23:00 (120 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Fri 14 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 3: Terra Rossa — Sat 15 Aug, 18:00–20:00 (120 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 4 — Sat 15 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 15 Aug, 18:00–19:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 15 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 7: London Independent Hospital — Sat 15 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 8 — Sat 15 Aug, 19:00–21:30 (150 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 2: Joma Padel — Sun 16 Aug, 20:30–22:00 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 3: Terra Rossa — Sun 16 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 4 — Sun 16 Aug, 21:00–22:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 1 — Sun 16 Aug, 20:30–22:00 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Sun 16 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 5 — Sun 16 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 6: Estrella Damm — Sun 16 Aug, 19:30–20:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 7: London Independent Hospital — Sun 16 Aug, 18:30–20:30 (120 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 8 — Sun 16 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 17 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 1 — Tue 18 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 20 Aug, 20:00–21:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 5 — Thu 20 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 9: Roofed Outdoor — Fri 21 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 5 — Fri 21 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 2: Joma Padel — Sun 23 Aug, 18:00–19:00 (60 min)
+[2026-07-29 15:21]   NOTIFY (court): Court 4 — Sun 23 Aug, 19:00–20:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 1 — Sun 23 Aug, 18:30–20:30 (120 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Sun 23 Aug, 18:30–20:00 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 5 — Sun 23 Aug, 21:00–22:00 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 24 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 6: Estrella Damm — Mon 24 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 6: Estrella Damm — Wed 26 Aug, 20:30–23:00 (150 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 7: London Independent Hospital — Wed 26 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 27 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 5 — Fri 28 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 7: London Independent Hospital — Fri 28 Aug, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 3: Terra Rossa — Mon 31 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 1 — Mon 31 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 31 Aug, 18:30–19:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 31 Aug, 21:00–22:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 5 — Mon 31 Aug, 19:00–20:00 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 6: Estrella Damm — Mon 31 Aug, 20:00–21:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 7: London Independent Hospital — Mon 31 Aug, 19:00–20:00 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 2: Joma Padel — Tue 01 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Tue 01 Sep, 21:00–22:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 4 — Wed 02 Sep, 21:00–23:00 (120 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 8 — Wed 02 Sep, 21:00–23:00 (120 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 03 Sep, 20:00–22:30 (150 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 8 — Thu 03 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 4 — Sun 06 Sep, 21:00–22:00 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 1 — Sun 06 Sep, 19:00–20:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 8 — Sun 06 Sep, 19:00–20:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Mon 07 Sep, 21:00–22:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 2: Joma Padel — Tue 08 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 1 — Tue 08 Sep, 20:30–21:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 9: Roofed Outdoor — Tue 08 Sep, 21:00–22:30 (90 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 6: Estrella Damm — Tue 08 Sep, 19:30–20:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 7: London Independent Hospital — Tue 08 Sep, 19:30–20:30 (60 min)
+[2026-07-29 15:22]   NOTIFY (court): Court 8 — Tue 08 Sep, 20:00–21:30 (90 min)
+[2026-07-29 15:22]   Done — notified for 7 new activity slot(s), 82 new court slot(s).

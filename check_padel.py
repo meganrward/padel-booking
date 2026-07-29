@@ -17,11 +17,16 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # iMessage recipients — each entry specifies which alert types they receive.
 # alert types: "lessons", "train_and_play", "courts"
+#   Optional per-target instructor overrides:
+#     "excluded_instructors": [...]  — skip this target for these instructors (defaults to EXCLUDED_INSTRUCTORS)
+#     "included_instructors": [...]  — if set, ONLY notify this target for these instructors,
+#                                       ignoring excluded_instructors entirely
 IMESSAGE_TARGETS = [
-    {"target": "wardmegan98@gmail.com", "types": ["train_and_play", "courts"]},
-    {"target": "+447711916416", "types": ["lessons"]},
-    {"target": "avinashguptaa01908@googlemail.com", "types": ["lessons"]},
-    {"target": "adam.selcon@googlemail.com",         "types": ["courts, lessons"]},  # friend — courts only; replace number
+    {"target": "wardmegan98@gmail.com", "types": ["train_and_play", "courts", "lessons"]},
+    # {"target": "+447711916416", "types": ["lessons"]},
+    {"target": "avinashguptaa01908@googlemail.com", "types": ["lessons"],
+     "included_instructors": ["pau monclus", "dylan du plooy"]},
+    {"target": "adam.selcon@googlemail.com", "types": ["courts", "lessons"]},
 ]
 
 NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone notifications
@@ -31,7 +36,7 @@ NOTIFY_LESSONS        = True  # private class + SPC tournaments — paused
 NOTIFY_TRAIN_AND_PLAY = True
 NOTIFY_COURTS         = True
 
-WEEKS_AHEAD = 6   # check current week + this many ahead (last API week is always excluded)
+WEEKS_AHEAD = 6   # check current week + this many ahead, minus 1 week to stay inside the ~41.3 day booking advance window
 ACTIVITY_FILTERS = ["private class", "train and play blue"]
 EXCLUDED_INSTRUCTORS = ["lucas burgess", "richard pratt", "megan  ward" ]
 STATE_FILE = os.path.join(SCRIPT_DIR, "notified_slots.json")
@@ -75,7 +80,7 @@ def post_json(path, body, opener=None):
 def get_available_weeks():
     result = post_json("/ActBooking/srvc.aspx/ObtenerSemanas", {})
     weeks = result.get("d", [])
-    return weeks[: WEEKS_AHEAD + 1]
+    return weeks[:WEEKS_AHEAD]  # drop the last API week — not yet within the booking advance window
 
 
 def get_activities_for_week(week_num, year):
@@ -123,9 +128,22 @@ def fetch_detail_html(link_url):
         return ""
 
 
-def is_excluded_instructor(html):
+def instructor_matches(html, names):
     h = html.lower()
-    return any(name in h for name in EXCLUDED_INSTRUCTORS)
+    return any(name in h for name in names)
+
+
+def is_excluded_instructor(html):
+    return instructor_matches(html, EXCLUDED_INSTRUCTORS)
+
+
+def target_allows_instructor(html, target):
+    """Per-target instructor filter: included_instructors (if set) overrides excluded_instructors."""
+    included = target.get("included_instructors")
+    if included:
+        return instructor_matches(html, included)
+    excluded = target.get("excluded_instructors", EXCLUDED_INSTRUCTORS)
+    return not instructor_matches(html, excluded)
 
 
 def is_level_suitable(html):
@@ -240,6 +258,10 @@ def check_court_bookings(notified):
     today = datetime.now().date()
     padel_id = COURT_GRID_ID
 
+    court_targets = [
+        r["target"] for r in IMESSAGE_TARGETS if "courts" in r.get("types", [])
+    ]
+
     for d_offset in range(1, (WEEKS_AHEAD + 1) * 7 + 1):
         dt = today + timedelta(days=d_offset)
         date_iso  = dt.strftime("%Y-%m-%d")
@@ -276,7 +298,7 @@ def check_court_bookings(notified):
                 subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
                 log(f"  NOTIFY (court): {subtitle}")
                 send_mac_notification("Court Available!", subtitle, "Free court slot")
-                send_imessage(f"Court free: {subtitle}", "courts")
+                send_imessage(f"Court free: {subtitle}", court_targets)
                 send_ntfy_notification("Court Available!", subtitle, "")
                 new_keys.add(slot_key)
 
@@ -325,9 +347,8 @@ def send_mac_notification(title, subtitle, message, url=""):
     subprocess.run(cmd, capture_output=True)
 
 
-def send_imessage(text, alert_type):
-    """Send iMessage to all recipients subscribed to alert_type."""
-    targets = [r["target"] for r in IMESSAGE_TARGETS if alert_type in r.get("types", [])]
+def send_imessage(text, targets):
+    """Send iMessage to the given list of recipient identifiers."""
     for target in targets:
         try:
             escaped = text.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
@@ -395,7 +416,13 @@ def main():
         link = slot.get("Link", "")
         html = fetch_detail_html(link)
 
-        if is_excluded_instructor(html):
+        eligible_targets = [
+            r["target"] for r in IMESSAGE_TARGETS
+            if alert_type in r.get("types", []) and target_allows_instructor(html, r)
+        ]
+        globally_excluded = is_excluded_instructor(html)
+
+        if globally_excluded and not eligible_targets:
             log(f"  Skip (excluded instructor): {name} — {slot.get('DiaDeLaSemana')} {slot.get('StrHoraInicio')}")
             continue
 
@@ -418,13 +445,14 @@ def main():
         imsg += f" · Book: {link}"
 
         log(f"  NOTIFY: {subtitle} ({vacancies} free)")
-        send_mac_notification("Padel Slot Available!", subtitle, message, url=link)
-        send_imessage(imsg, alert_type)
-        send_ntfy_notification(
-            "Padel Slot Available!",
-            f"{subtitle}. {vacancies} spot(s) free.",
-            link,
-        )
+        if not globally_excluded:
+            send_mac_notification("Padel Slot Available!", subtitle, message, url=link)
+            send_ntfy_notification(
+                "Padel Slot Available!",
+                f"{subtitle}. {vacancies} spot(s) free.",
+                link,
+            )
+        send_imessage(imsg, eligible_targets)
 
         new_bids.add(bid)
         notify_count += 1
