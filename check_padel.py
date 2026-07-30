@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # iMessage recipients — each entry specifies which alert types they receive.
-# alert types: "lessons", "train_and_play", "courts"
+# alert types: "lessons", "train_and_play", "courts" (evening courts), "last_minute_courts"
 #   Optional per-target instructor overrides:
 #     "excluded_instructors": [...]  — skip this target for these instructors (defaults to EXCLUDED_INSTRUCTORS)
 #     "included_instructors": [...]  — if set, ONLY notify this target for these instructors,
@@ -32,9 +32,10 @@ IMESSAGE_TARGETS = load_targets()
 NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone notifications
 
 # Toggle alert types on/off independently
-NOTIFY_LESSONS        = True  # private class + SPC tournaments — paused
-NOTIFY_TRAIN_AND_PLAY = True
-NOTIFY_COURTS         = True
+NOTIFY_LESSONS            = True  # private class + SPC tournaments — paused
+NOTIFY_TRAIN_AND_PLAY     = True
+NOTIFY_COURTS             = True
+NOTIFY_LAST_MINUTE_COURTS = True
 
 WEEKS_AHEAD = 6   # check current week + this many ahead, minus 1 week to stay inside the ~41.3 day booking advance window
 ACTIVITY_FILTERS = ["private class", "train and play blue"]
@@ -47,6 +48,12 @@ COURT_MIN_TIME          = "18:00"   # only alert for slots starting at or after 
 COURT_MAX_START_TIME    = "21:30"   # do not alert for slots starting at or after this time
 COURT_MIN_DURATION_MINS = 60        # only alert for gaps of at least this duration
 COURT_GRID_ID           = 4         # idCuadro for the Padel court grid (discovered 2026-05-21 via ObtenerCuadros)
+
+# "Last minute courts" alert config — off-peak weekday gaps starting soon
+LAST_MINUTE_OFFPEAK_START   = "08:00"  # off-peak window start (HH:MM)
+LAST_MINUTE_OFFPEAK_END     = "16:00"  # off-peak window end (HH:MM)
+LAST_MINUTE_MIN_DURATION_MINS = 60     # only alert for gaps of at least this duration
+LAST_MINUTE_HOURS_AHEAD     = 24       # only alert for slots starting within this many hours from now
 
 BASE_URL = "https://stratfordpadelclub.matchpoint.com.es"
 
@@ -202,15 +209,16 @@ def _init_court_session():
     return opener, key
 
 
-def _free_slots_after(ocupaciones, grid_close_str):
+def _free_slots_after(ocupaciones, grid_close_str, min_start_str=None, max_start_str=None, min_duration=None):
     """
     Yield (start_mins, end_mins) tuples for free gaps that:
-    - start at or after COURT_MIN_TIME
-    - start before COURT_MAX_START_TIME
-    - are at least COURT_MIN_DURATION_MINS long
+    - start at or after min_start_str (default COURT_MIN_TIME)
+    - start before max_start_str (default COURT_MAX_START_TIME)
+    - are at least min_duration long (default COURT_MIN_DURATION_MINS)
     """
-    min_start  = _mins(COURT_MIN_TIME)
-    max_start  = _mins(COURT_MAX_START_TIME)
+    min_start  = _mins(min_start_str or COURT_MIN_TIME)
+    max_start  = _mins(max_start_str or COURT_MAX_START_TIME)
+    min_duration = COURT_MIN_DURATION_MINS if min_duration is None else min_duration
     grid_close = _mins(grid_close_str)
 
     booked = []
@@ -233,11 +241,11 @@ def _free_slots_after(ocupaciones, grid_close_str):
         if bstart > cursor:
             gap_start = cursor
             gap_end   = bstart
-            if gap_start < max_start and (gap_end - gap_start) >= COURT_MIN_DURATION_MINS:
+            if gap_start < max_start and (gap_end - gap_start) >= min_duration:
                 yield (gap_start, gap_end)
         cursor = max(cursor, bend)
 
-    if cursor < max_start and (grid_close - cursor) >= COURT_MIN_DURATION_MINS:
+    if cursor < max_start and (grid_close - cursor) >= min_duration:
         yield (cursor, grid_close)
 
 
@@ -298,8 +306,88 @@ def check_court_bookings(notified):
                 subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
                 log(f"  NOTIFY (court): {subtitle}")
                 send_mac_notification("Court Available!", subtitle, "Free court slot")
-                send_imessage(f"Court free: {subtitle}", court_targets)
+                send_imessage(f"Evening court free: {subtitle}", court_targets)
                 send_ntfy_notification("Court Available!", subtitle, "")
+                new_keys.add(slot_key)
+
+    return new_keys
+
+
+def check_last_minute_courts(notified):
+    """
+    Same/next-day off-peak weekday court gaps (LAST_MINUTE_OFFPEAK_START-END) of at
+    least LAST_MINUTE_MIN_DURATION_MINS, starting within LAST_MINUTE_HOURS_AHEAD hours.
+    """
+    if not NOTIFY_LAST_MINUTE_COURTS:
+        return set()
+
+    targets = [r["target"] for r in IMESSAGE_TARGETS if "last_minute_courts" in r.get("types", [])]
+    if not targets:
+        return set()
+
+    log("  Checking last-minute court availability...")
+    new_keys = set()
+
+    try:
+        opener, key = _init_court_session()
+    except Exception as e:
+        log(f"  Last-minute court session init failed: {e}")
+        return new_keys
+
+    now = datetime.now()
+    cutoff = now + timedelta(hours=LAST_MINUTE_HOURS_AHEAD)
+    padel_id = COURT_GRID_ID
+
+    # Only today + tomorrow can fall within a 24h lookahead window.
+    for d_offset in range(0, 2):
+        dt = now.date() + timedelta(days=d_offset)
+        if dt.weekday() >= 5:  # weekends excluded (off-peak weekday only)
+            continue
+
+        date_api  = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
+        date_nice = dt.strftime("%a %d %b")
+
+        try:
+            result = post_json(
+                "/booking/srvc.aspx/ObtenerCuadro",
+                {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
+                opener=opener,
+            )
+        except Exception as e:
+            log(f"  Last-minute court grid fetch failed ({date_api}): {e}")
+            continue
+
+        d = result.get("d") or {}
+        columnas = d.get("Columnas") or []
+        grid_close = d.get("StrHoraFin") or LAST_MINUTE_OFFPEAK_END
+
+        for col in columnas:
+            court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
+            ocupaciones = col.get("Ocupaciones") or []
+
+            for free_start, free_end in _free_slots_after(
+                ocupaciones, grid_close,
+                min_start_str=LAST_MINUTE_OFFPEAK_START,
+                max_start_str=LAST_MINUTE_OFFPEAK_END,
+                min_duration=LAST_MINUTE_MIN_DURATION_MINS,
+            ):
+                start_dt = datetime.combine(dt, datetime.min.time()) + timedelta(minutes=free_start)
+                if start_dt <= now or start_dt > cutoff:
+                    continue
+
+                start_str = _fmt_mins(free_start)
+                end_str   = _fmt_mins(free_end)
+                duration  = free_end - free_start
+                slot_key  = f"lastmin_{padel_id}_{dt.isoformat()}_{court_name}_{start_str.replace(':', '')}"
+
+                if slot_key in notified:
+                    continue
+
+                subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
+                log(f"  NOTIFY (last-minute court): {subtitle}")
+                send_mac_notification("Last-Minute Court!", subtitle, "Off-peak court free <24h away")
+                send_imessage(f"Buddy court free: {subtitle}", targets)
+                send_ntfy_notification("Last-Minute Court!", subtitle, "")
                 new_keys.add(slot_key)
 
     return new_keys
@@ -463,10 +551,12 @@ def main():
 
     # Court hire check
     new_court_keys = check_court_bookings(notified)
+    new_last_minute_keys = check_last_minute_courts(notified)
 
-    save_notified(notified_dict, new_bids | new_court_keys)
+    save_notified(notified_dict, new_bids | new_court_keys | new_last_minute_keys)
     log(f"  Done — notified for {notify_count} new activity slot(s), "
-        f"{len(new_court_keys)} new court slot(s).")
+        f"{len(new_court_keys)} new court slot(s), "
+        f"{len(new_last_minute_keys)} new last-minute court slot(s).")
 
 
 if __name__ == "__main__":

@@ -16027,3 +16027,32 @@ FileNotFoundError: [Errno 2] No such file or directory: '/opt/homebrew/bin/termi
 [2026-07-29 17:42]   Checking court hire availability...
 [2026-07-29 17:43]   Court grid fetch failed (27/8/2026): <urlopen error timed out>
 [2026-07-29 17:43]   Done — notified for 2 new activity slot(s), 0 new court slot(s).
+[2026-07-30 23:27] Checking availability...
+[2026-07-30 23:27]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-30 23:27]   7 available target slot(s) (before detail checks)
+[2026-07-30 23:27]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Friday 09:00
+[2026-07-30 23:27]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-30 23:27]   NOTIFY: Private Class — Tue 18 Aug, 15:00–16:00 (1 free)
+[2026-07-30 23:27]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-30 23:27]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-30 23:27]   Checking court hire availability...
+[2026-07-30 23:27]   NOTIFY (court): Court 2: Joma Padel — Sat 01 Aug, 18:30–20:00 (90 min)
+[2026-07-30 23:27]   NOTIFY (court): Court 8 — Sat 01 Aug, 20:00–21:30 (90 min)
+[2026-07-30 23:27]   NOTIFY (court): Court 2: Joma Padel — Wed 09 Sep, 20:30–21:30 (60 min)
+[2026-07-30 23:27]   NOTIFY (court): Court 4 — Wed 09 Sep, 20:30–21:30 (60 min)
+[2026-07-30 23:27]   NOTIFY (court): Court 9: Roofed Outdoor — Wed 09 Sep, 21:00–22:30 (90 min)
+[2026-07-30 23:27]   NOTIFY (court): Court 5 — Wed 09 Sep, 20:30–21:30 (60 min)
+[2026-07-30 23:27]   Checking last-minute court availability...
+[2026-07-30 23:27]   NOTIFY (last-minute court): Court 9: Roofed Outdoor — Fri 31 Jul, 10:00–11:00 (60 min)
+[2026-07-30 23:27]   NOTIFY (last-minute court): Court 8 — Fri 31 Jul, 08:00–09:30 (90 min)
+[2026-07-30 23:27]   Done — notified for 1 new activity slot(s), 6 new court slot(s), 2 new last-minute court slot(s).
+[2026-07-30 23:28] Checking availability...
+[2026-07-30 23:28]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-30 23:28]   7 available target slot(s) (before detail checks)
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Friday 09:00
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-30 23:28]   Checking court hire availability...
+[2026-07-30 23:28]   Checking last-minute court availability...
+[2026-07-30 23:28]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).

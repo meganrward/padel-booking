@@ -15488,3 +15488,13 @@ Traceback (most recent call last):
     return self._sslobj.read(len, buffer)
 socket.timeout: The read operation timed out
 
+[2026-07-30 23:28] Checking availability...
+[2026-07-30 23:28]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-30 23:28]   7 available target slot(s) (before detail checks)
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Friday 09:00
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-30 23:28]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-30 23:28]   Checking court hire availability...
+[2026-07-30 23:28]   Checking last-minute court availability...
+[2026-07-30 23:28]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).

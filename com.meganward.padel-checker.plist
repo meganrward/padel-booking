@@ -7,16 +7,16 @@
     <key>ProgramArguments</key>
     <array>
         <string>/usr/bin/python3</string>
-        <string>/Users/meganward/personal/padel-booking/check_padel.py</string>
+        <string>/Users/meganward/projects/padel-booking/check_padel.py</string>
     </array>
     <key>StartInterval</key>
     <integer>600</integer>
     <key>RunAtLoad</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/Users/meganward/personal/padel-booking/launchd_stdout.log</string>
+    <string>/Users/meganward/projects/padel-booking/launchd_stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/meganward/personal/padel-booking/launchd_stderr.log</string>
+    <string>/Users/meganward/projects/padel-booking/launchd_stderr.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

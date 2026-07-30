@@ -13,7 +13,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PEOPLE_FILE = os.path.join(REPO_ROOT, "people.json")
 INSTRUCTORS_FILE = os.path.join(REPO_ROOT, "instructors.json")
 
-AlertType = Literal["lessons", "train_and_play", "courts"]
+AlertType = Literal["lessons", "train_and_play", "courts", "last_minute_courts"]
 
 app = FastAPI(title="Padel Booking Admin API")
 

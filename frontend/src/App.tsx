@@ -4,9 +4,10 @@ import { InstructorPicker } from "./InstructorPicker";
 import "./App.css";
 
 const TYPE_LABELS: { key: AlertType; label: string }[] = [
-  { key: "courts", label: "Courts" },
+  { key: "courts", label: "Evening Courts" },
   { key: "lessons", label: "Lessons" },
   { key: "train_and_play", label: "Train & Play" },
+  { key: "last_minute_courts", label: "Last minute courts" },
 ];
 
 function emptyPerson(): Person {

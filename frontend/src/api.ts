@@ -1,4 +1,4 @@
-export type AlertType = "lessons" | "train_and_play" | "courts";
+export type AlertType = "lessons" | "train_and_play" | "courts" | "last_minute_courts";
 
 export interface Person {
   name: string;
