@@ -7,6 +7,7 @@ export interface Person {
   level?: number | null;
   excluded_instructors?: string[] | null;
   included_instructors?: string[] | null;
+  apply_instructor_filter_to_train_and_play?: boolean;
 }
 
 const BASE_URL = "http://localhost:8000";

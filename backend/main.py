@@ -32,6 +32,7 @@ class Person(BaseModel):
     level: float | None = None
     excluded_instructors: list[str] | None = None
     included_instructors: list[str] | None = None
+    apply_instructor_filter_to_train_and_play: bool = False
 
     @field_validator("name", "target")
     @classmethod
@@ -48,6 +49,7 @@ class PersonUpdate(BaseModel):
     level: float | None = None
     excluded_instructors: list[str] | None = None
     included_instructors: list[str] | None = None
+    apply_instructor_filter_to_train_and_play: bool = False
 
 
 def load_people() -> list[dict]:

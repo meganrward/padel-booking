@@ -47,6 +47,7 @@ export default function App() {
         level: next.level ?? undefined,
         excluded_instructors: next.excluded_instructors ?? undefined,
         included_instructors: next.included_instructors ?? undefined,
+        apply_instructor_filter_to_train_and_play: next.apply_instructor_filter_to_train_and_play ?? false,
       });
     } catch (e) {
       setError((e as Error).message);
@@ -147,6 +148,19 @@ export default function App() {
               allInstructors={instructors}
               onChange={(patch) => handleUpdate(person.target, patch)}
             />
+            {person.types.includes("train_and_play") &&
+              (person.excluded_instructors?.length || person.included_instructors?.length) && (
+                <label className="toggle train-play-instructor-toggle">
+                  <input
+                    type="checkbox"
+                    checked={person.apply_instructor_filter_to_train_and_play ?? false}
+                    onChange={(e) =>
+                      handleUpdate(person.target, { apply_instructor_filter_to_train_and_play: e.target.checked })
+                    }
+                  />
+                  Apply instructor filter to Train &amp; Play?
+                </label>
+              )}
           </div>
         ))}
       </div>

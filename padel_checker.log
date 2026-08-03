@@ -16056,3 +16056,261 @@ FileNotFoundError: [Errno 2] No such file or directory: '/opt/homebrew/bin/termi
 [2026-07-30 23:28]   Checking court hire availability...
 [2026-07-30 23:28]   Checking last-minute court availability...
 [2026-07-30 23:28]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 01:36] Checking availability...
+[2026-07-31 01:36]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 01:36]   7 available target slot(s) (before detail checks)
+[2026-07-31 01:36]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Friday 09:00
+[2026-07-31 01:36]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 01:36]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 01:36]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 01:36]   Checking court hire availability...
+[2026-07-31 02:27]   Court grid fetch failed (16/9/2026): <urlopen error [Errno 60] Operation timed out>
+[2026-07-31 02:27]   Checking last-minute court availability...
+[2026-07-31 02:27]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 11:54] Checking availability...
+[2026-07-31 11:54]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 11:54]   10 available target slot(s) (before detail checks)
+[2026-07-31 11:54]   NOTIFY: Private Class — Sat 01 Aug, 11:00–12:00 (1 free)
+[2026-07-31 12:05]   iMessage error (adam.selcon@googlemail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "adam.selcon@googlemail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "adam.selcon@googlemail.com" of s\n    end try\n    send "Private Class — Sat 01 Aug, 11:00–12:00 · Coach: Juan Jose Iguaran · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=d05f9c9f3163a95336793c496ca6b592&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=01-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 12:05]   NOTIFY: Train and Play Blue — Sun 09 Aug, 14:00–16:00 (1 free)
+[2026-07-31 12:06]   iMessage error (+447711890454): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "+447711890454" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "+447711890454" of s\n    end try\n    send "Train and Play Blue — Sun 09 Aug, 14:00–16:00 · Coach: Nacho Gonzalez · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=4225788e03a59ddd325a59314db6ccb1&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=09-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 12:06]   NOTIFY: Private Class — Thu 13 Aug, 08:00–09:00 (1 free)
+[2026-07-31 12:06]   iMessage error (adam.selcon@googlemail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "adam.selcon@googlemail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "adam.selcon@googlemail.com" of s\n    end try\n    send "Private Class — Thu 13 Aug, 08:00–09:00 · Coach: Aston  Deva-Nix · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=4afc9d15a8baa1b47272ab2f177085dc&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=13-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 12:06]   NOTIFY: Train and Play Blue — Thu 13 Aug, 12:00–14:00 (1 free)
+[2026-07-31 12:22]   iMessage error (wardmegan98@gmail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "wardmegan98@gmail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "wardmegan98@gmail.com" of s\n    end try\n    send "Train and Play Blue — Thu 13 Aug, 12:00–14:00 · Coach: Dylan Du Plooy · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=b27040fe0c8c2f39c5be56042d1c9347&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=13-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 12:22]   iMessage error (+447711890454): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "+447711890454" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "+447711890454" of s\n    end try\n    send "Train and Play Blue — Thu 13 Aug, 12:00–14:00 · Coach: Dylan Du Plooy · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=b27040fe0c8c2f39c5be56042d1c9347&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=13-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 12:22]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 12:22]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 12:22]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 12:22]   NOTIFY: Private Class — Thu 03 Sep, 16:00–17:00 (1 free)
+[2026-07-31 12:55]   iMessage error (adam.selcon@googlemail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "adam.selcon@googlemail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "adam.selcon@googlemail.com" of s\n    end try\n    send "Private Class — Thu 03 Sep, 16:00–17:00 · Coach: Aston  Deva-Nix · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=8dd7304c292c82e469eb3bd880019965&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=03-09-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 12:55]   Checking court hire availability...
+[2026-07-31 12:55]   NOTIFY (court): Court 5 — Tue 11 Aug, 18:30–20:00 (90 min)
+[2026-07-31 13:06]   iMessage error (wardmegan98@gmail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "wardmegan98@gmail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "wardmegan98@gmail.com" of s\n    end try\n    send "Evening court free: Court 5 — Tue 11 Aug, 18:30–20:00 (90 min)" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 13:07]   iMessage error (adam.selcon@googlemail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "adam.selcon@googlemail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "adam.selcon@googlemail.com" of s\n    end try\n    send "Evening court free: Court 5 — Tue 11 Aug, 18:30–20:00 (90 min)" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 13:07]   iMessage error (+447711890454): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "+447711890454" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "+447711890454" of s\n    end try\n    send "Evening court free: Court 5 — Tue 11 Aug, 18:30–20:00 (90 min)" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 13:42]   Court grid fetch failed (24/8/2026): <urlopen error [Errno 60] Operation timed out>
+[2026-07-31 14:07]   Court grid fetch failed (16/9/2026): The read operation timed out
+[2026-07-31 14:07]   Checking last-minute court availability...
+[2026-07-31 14:07]   Done — notified for 5 new activity slot(s), 1 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 17:08] Checking availability...
+[2026-07-31 17:08]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 17:08]   7 available target slot(s) (before detail checks)
+[2026-07-31 17:08]   NOTIFY: Private Class — Fri 14 Aug, 13:00–14:00 (1 free)
+[2026-07-31 17:10]   iMessage error (wardmegan98@gmail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "wardmegan98@gmail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "wardmegan98@gmail.com" of s\n    end try\n    send "Private Class — Fri 14 Aug, 13:00–14:00 · Coach: Dylan Du Plooy · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=9751c6800ccbb1137039815048243a13&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=14-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 17:28]   iMessage error (avinashguptaa01908@googlemail.com): Command '['osascript', '-e', '\ntell application "Messages"\n    try\n        set s to 1st service whose service type = iMessage\n        set b to buddy "avinashguptaa01908@googlemail.com" of s\n    on error\n        set s to 1st service whose service type = SMS\n        set b to buddy "avinashguptaa01908@googlemail.com" of s\n    end try\n    send "Private Class — Fri 14 Aug, 13:00–14:00 · Coach: Dylan Du Plooy · Book: https://stratfordpadelclub.matchpoint.com.es/actbooking/info.aspx?bid=9751c6800ccbb1137039815048243a13&progid=8cf46e72728cc2409f2de8cc87d86bfb&d=14-08-2026&return_url=https://stratfordpadelclub.matchpoint.com.es/actbooking/weekgrid.aspx" to b\nend tell\n']' timed out after 15 seconds
+[2026-07-31 17:29]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 17:29]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 17:29]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 17:29]   Checking court hire availability...
+[2026-07-31 17:29]   NOTIFY (court): Court 2: Joma Padel — Mon 10 Aug, 18:30–20:00 (90 min)
+[2026-07-31 17:29]   iMessage failed (wardmegan98@gmail.com): 178:214: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (adam.selcon@googlemail.com): 183:219: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (+447711890454): 170:206: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   NOTIFY (court): Court 9: Roofed Outdoor — Thu 10 Sep, 20:00–22:30 (150 min)
+[2026-07-31 17:29]   iMessage failed (wardmegan98@gmail.com): 178:214: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (adam.selcon@googlemail.com): 183:219: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (+447711890454): 170:206: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   NOTIFY (court): Court 5 — Thu 10 Sep, 20:00–21:30 (90 min)
+[2026-07-31 17:29]   iMessage failed (wardmegan98@gmail.com): 178:214: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (adam.selcon@googlemail.com): 183:219: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (+447711890454): 170:206: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   NOTIFY (court): Court 8 — Thu 10 Sep, 20:00–21:30 (90 min)
+[2026-07-31 17:29]   iMessage failed (wardmegan98@gmail.com): 178:214: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (adam.selcon@googlemail.com): 183:219: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   iMessage failed (+447711890454): 170:206: execution error: Not authorised to send Apple events to Messages. (-1743)
+[2026-07-31 17:29]   Checking last-minute court availability...
+[2026-07-31 17:29]   Done — notified for 1 new activity slot(s), 4 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 17:41] Checking availability...
+[2026-07-31 17:41]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 17:41]   6 available target slot(s) (before detail checks)
+[2026-07-31 17:41]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 17:41]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 17:41]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 17:41]   Checking court hire availability...
+[2026-07-31 17:42]   Checking last-minute court availability...
+[2026-07-31 17:42]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 17:52] Checking availability...
+[2026-07-31 17:52]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 17:52]   6 available target slot(s) (before detail checks)
+[2026-07-31 17:52]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 17:52]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 17:52]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 17:52]   Checking court hire availability...
+[2026-07-31 17:52]   Checking last-minute court availability...
+[2026-07-31 17:52]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 18:02] Checking availability...
+[2026-07-31 18:02]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 18:02]   6 available target slot(s) (before detail checks)
+[2026-07-31 18:02]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 18:02]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 18:02]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 18:02]   Checking court hire availability...
+[2026-07-31 18:03]   Court grid fetch failed (26/8/2026): <urlopen error timed out>
+[2026-07-31 18:03]   Checking last-minute court availability...
+[2026-07-31 18:03]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 18:13] Checking availability...
+[2026-07-31 18:13]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 18:13]   7 available target slot(s) (before detail checks)
+[2026-07-31 18:13]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 18:13]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 18:13]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-07-31 18:13]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 18:13]   Checking court hire availability...
+[2026-07-31 18:13]   Checking last-minute court availability...
+[2026-07-31 18:13]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-07-31 18:23] Checking availability...
+[2026-07-31 18:23]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-07-31 18:24]   7 available target slot(s) (before detail checks)
+[2026-07-31 18:24]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-07-31 18:24]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-07-31 18:24]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-07-31 18:24]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-07-31 18:24]   Checking court hire availability...
+[2026-07-31 18:24]   Checking last-minute court availability...
+[2026-07-31 18:24]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-08-01 00:30] Checking availability...
+[2026-08-01 00:30]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-08-01 00:30]   7 available target slot(s) (before detail checks)
+[2026-08-01 00:30]   NOTIFY: Private Class — Mon 03 Aug, 10:00–11:00 (1 free)
+[2026-08-01 00:30]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-01 00:30]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-01 00:30]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-08-01 00:30]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-01 00:30]   Checking court hire availability...
+[2026-08-01 00:30]   NOTIFY (court): Court 5 — Sun 02 Aug, 20:30–22:00 (90 min)
+[2026-08-01 00:30]   Checking last-minute court availability...
+[2026-08-01 00:30]   Done — notified for 1 new activity slot(s), 1 new court slot(s), 0 new last-minute court slot(s).
+[2026-08-01 10:04] Checking availability...
+[2026-08-01 10:04]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-08-01 10:04]   5 available target slot(s) (before detail checks)
+[2026-08-01 10:04]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-01 10:04]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-01 10:04]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-08-01 10:04]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-01 10:04]   Checking court hire availability...
+[2026-08-01 10:04]   NOTIFY (court): Court 9: Roofed Outdoor — Fri 11 Sep, 18:00–19:30 (90 min)
+[2026-08-01 10:04]   NOTIFY (court): Court 9: Roofed Outdoor — Fri 11 Sep, 21:00–22:30 (90 min)
+[2026-08-01 10:04]   NOTIFY (court): Court 5 — Fri 11 Sep, 18:30–20:00 (90 min)
+[2026-08-01 10:04]   NOTIFY (court): Court 6: Estrella Damm — Fri 11 Sep, 19:00–20:00 (60 min)
+[2026-08-01 10:04]   NOTIFY (court): Court 7: London Independent Hospital — Fri 11 Sep, 19:00–20:00 (60 min)
+[2026-08-01 10:04]   NOTIFY (court): Court 8 — Fri 11 Sep, 19:00–20:00 (60 min)
+[2026-08-01 10:04]   Checking last-minute court availability...
+[2026-08-01 10:04]   Done — notified for 0 new activity slot(s), 6 new court slot(s), 0 new last-minute court slot(s).
+[2026-08-01 16:10] Checking availability...
+[2026-08-01 16:10]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-08-01 16:10]   5 available target slot(s) (before detail checks)
+[2026-08-01 16:10]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-01 16:10]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-01 16:10]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-08-01 16:10]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-01 16:10]   Checking court hire availability...
+[2026-08-01 16:10]   NOTIFY (court): Court 4 — Wed 12 Aug, 18:30–20:00 (90 min)
+[2026-08-01 16:10]   NOTIFY (court): Court 7: London Independent Hospital — Tue 08 Sep, 21:00–23:00 (120 min)
+[2026-08-01 16:10]   NOTIFY (court): Court 8 — Fri 11 Sep, 20:00–21:30 (90 min)
+[2026-08-01 16:10]   Checking last-minute court availability...
+[2026-08-01 16:10]   Done — notified for 0 new activity slot(s), 3 new court slot(s), 0 new last-minute court slot(s).
+[2026-08-01 23:32] Checking availability...
+[2026-08-01 23:32]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-08-01 23:35]   7 available target slot(s) (before detail checks)
+[2026-08-01 23:35]   NOTIFY: Private Class — Mon 03 Aug, 13:00–14:00 (1 free)
+[2026-08-01 23:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-01 23:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-01 23:35]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-08-01 23:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-01 23:35]   Checking court hire availability...
+[2026-08-01 23:35]   NOTIFY (court): Court 3: Terra Rossa — Sun 02 Aug, 21:00–22:00 (60 min)
+[2026-08-01 23:35]   NOTIFY (court): Court 5 — Mon 03 Aug, 19:00–20:00 (60 min)
+[2026-08-01 23:36]   Checking last-minute court availability...
+[2026-08-01 23:36]   Done — notified for 1 new activity slot(s), 2 new court slot(s), 0 new last-minute court slot(s).
+[2026-08-02 10:19] Checking availability...
+[2026-08-02 10:19]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-08-02 10:19]   8 available target slot(s) (before detail checks)
+[2026-08-02 10:19]   NOTIFY: Private Class — Tue 04 Aug, 13:00–14:00 (1 free)
+[2026-08-02 10:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 17:00
+[2026-08-02 10:35]   NOTIFY: Private Class — Mon 10 Aug, 11:00–12:00 (1 free)
+[2026-08-02 10:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-02 10:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-02 10:35]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-08-02 10:35]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-02 10:35]   Checking court hire availability...
+[2026-08-02 10:49]   Court grid fetch failed (18/8/2026): The read operation timed out
+[2026-08-02 10:49]   Court grid fetch failed (19/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (20/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (21/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (22/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (23/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (24/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (25/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (26/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (27/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (28/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (29/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (30/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (31/8/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (1/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (2/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (3/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (4/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (5/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (6/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (7/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (8/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (9/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (10/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (11/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (12/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (13/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (14/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (15/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (16/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (17/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (18/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (19/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Court grid fetch failed (20/9/2026): <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Checking last-minute court availability...
+[2026-08-02 10:49]   Last-minute court session init failed: <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[2026-08-02 10:49]   Done — notified for 2 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s).
+[2026-08-02 18:54] Checking availability...
+[2026-08-02 18:54]   Weeks: 27/07/2026, 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026
+[2026-08-02 18:54]   7 available target slot(s) (before detail checks)
+[2026-08-02 18:54]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 17:00
+[2026-08-02 18:54]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-02 18:54]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-02 18:54]   Skip (no eligible recipients — instructor/level filters): Private Class — Thursday 17:00
+[2026-08-02 18:54]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-02 18:54]   Checking court hire availability...
+[2026-08-02 18:55]   Court grid fetch failed (7/8/2026): <urlopen error timed out>
+[2026-08-02 19:04]   Court grid fetch failed (15/8/2026): The read operation timed out
+[2026-08-02 19:04]   NOTIFY (court): Court 3: Terra Rossa — Sat 12 Sep, 20:00–21:30 (90 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 4 — Sat 12 Sep, 18:00–20:00 (120 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 1 — Sat 12 Sep, 20:00–21:30 (90 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 12 Sep, 18:00–19:30 (90 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 12 Sep, 21:00–22:30 (90 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 6: Estrella Damm — Sat 12 Sep, 18:30–20:00 (90 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 7: London Independent Hospital — Sat 12 Sep, 18:30–20:00 (90 min)
+[2026-08-02 19:04]   NOTIFY (court): Court 8 — Sat 12 Sep, 18:30–21:30 (180 min)
+[2026-08-02 19:04]   Checking last-minute court availability...
+[2026-08-02 19:04]   NOTIFY (last-minute court): Court 1 — Mon 03 Aug, 11:00–13:00 (120 min)
+[2026-08-02 19:04]   NOTIFY (last-minute court): Court 9: Roofed Outdoor — Mon 03 Aug, 09:30–12:00 (150 min)
+[2026-08-02 19:04]   NOTIFY (last-minute court): Court 6: Estrella Damm — Mon 03 Aug, 09:30–10:30 (60 min)
+[2026-08-02 19:04]   NOTIFY (last-minute court): Court 6: Estrella Damm — Mon 03 Aug, 11:30–12:30 (60 min)
+[2026-08-02 19:04]   NOTIFY (last-minute court): Court 6: Estrella Damm — Mon 03 Aug, 15:30–17:00 (90 min)
+[2026-08-02 19:04]   Done — notified for 0 new activity slot(s), 8 new court slot(s), 5 new last-minute court slot(s).
+[2026-08-03 05:51] Checking availability...
+[2026-08-03 06:01]   Weeks: 03/08/2026, 10/08/2026, 17/08/2026, 24/08/2026, 31/08/2026, 07/09/2026
+[2026-08-03 06:01]   6 available target slot(s) (before detail checks)
+[2026-08-03 06:01]   NOTIFY: Train and Play Blue — Tue 04 Aug, 16:00–18:00 (1 free)
+[2026-08-03 06:01]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 17:00
+[2026-08-03 06:01]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 15:00
+[2026-08-03 06:01]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Tuesday 10:00
+[2026-08-03 06:01]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 10:00
+[2026-08-03 06:01]   Skip (no eligible recipients — instructor/level filters): Train and Play Blue — Wednesday 09:30
+[2026-08-03 06:01]   Checking court hire availability...
+[2026-08-03 06:01]   NOTIFY (court): Court 9: Roofed Outdoor — Sat 15 Aug, 18:30–19:30 (60 min)
+[2026-08-03 06:01]   NOTIFY (court): Court 1 — Sun 23 Aug, 19:30–20:30 (60 min)
+[2026-08-03 06:01]   Checking last-minute court availability...
+[2026-08-03 06:01]   NOTIFY (last-minute court): Court 2: Joma Padel — Mon 03 Aug, 11:00–12:30 (90 min)
+[2026-08-03 06:01]   NOTIFY (last-minute court): Court 1 — Mon 03 Aug, 09:30–12:00 (150 min)
+[2026-08-03 06:01]   NOTIFY (last-minute court): Court 9: Roofed Outdoor — Mon 03 Aug, 09:00–13:00 (240 min)
+[2026-08-03 06:01]   Done — notified for 1 new activity slot(s), 2 new court slot(s), 3 new last-minute court slot(s).

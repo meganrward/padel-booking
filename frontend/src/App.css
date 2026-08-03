@@ -107,6 +107,10 @@ h1 {
   gap: 0.6rem;
 }
 
+.train-play-instructor-toggle {
+  margin-top: 1rem;
+}
+
 .instructor-picker-body > select {
   align-self: flex-start;
 }

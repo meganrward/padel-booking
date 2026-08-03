@@ -21,6 +21,9 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 #     "excluded_instructors": [...]  — skip this target for these instructors (defaults to EXCLUDED_INSTRUCTORS)
 #     "included_instructors": [...]  — if set, ONLY notify this target for these instructors,
 #                                       ignoring excluded_instructors entirely
+#     "apply_instructor_filter_to_train_and_play": true  — by default, instructor filters only
+#                                       apply to lessons (private classes); set this to also
+#                                       apply them to train_and_play
 # Managed via people.json (edit directly, or use the admin UI in backend/ + frontend/).
 def load_targets():
     path = os.path.join(SCRIPT_DIR, "people.json")
@@ -140,8 +143,14 @@ def is_excluded_instructor(html):
     return instructor_matches(html, EXCLUDED_INSTRUCTORS)
 
 
-def target_allows_instructor(html, target):
-    """Per-target instructor filter: included_instructors (if set) overrides excluded_instructors."""
+def target_allows_instructor(html, target, alert_type):
+    """Per-target instructor filter: included_instructors (if set) overrides excluded_instructors.
+
+    Only applies to train_and_play if the target has opted in via
+    apply_instructor_filter_to_train_and_play — otherwise train_and_play is unfiltered.
+    """
+    if alert_type == "train_and_play" and not target.get("apply_instructor_filter_to_train_and_play"):
+        return True
     included = target.get("included_instructors")
     if included:
         return instructor_matches(html, included)
@@ -512,7 +521,7 @@ def main():
         eligible_targets = [
             r["target"] for r in IMESSAGE_TARGETS
             if alert_type in r.get("types", [])
-            and target_allows_instructor(html, r)
+            and target_allows_instructor(html, r, alert_type)
             and (alert_type != "train_and_play" or target_level_suitable(html, r))
         ]
 
