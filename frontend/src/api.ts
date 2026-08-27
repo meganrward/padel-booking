@@ -1,4 +1,4 @@
-export type AlertType = "lessons" | "train_and_play" | "courts" | "last_minute_courts";
+export type AlertType = "lessons" | "train_and_play" | "courts" | "last_minute_courts" | "matches";
 
 export interface Person {
   name: string;
@@ -8,6 +8,8 @@ export interface Person {
   excluded_instructors?: string[] | null;
   included_instructors?: string[] | null;
   apply_instructor_filter_to_train_and_play?: boolean;
+  matches_start_time?: string | null;
+  matches_end_time?: string | null;
 }
 
 const BASE_URL = "http://localhost:8000";

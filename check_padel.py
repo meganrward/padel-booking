@@ -7,6 +7,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import traceback
 import urllib.parse
 import urllib.request
@@ -16,7 +17,11 @@ from datetime import datetime, timedelta
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # iMessage recipients — each entry specifies which alert types they receive.
-# alert types: "lessons", "train_and_play", "courts" (evening courts), "last_minute_courts"
+# alert types: "lessons", "train_and_play", "courts" (evening courts), "last_minute_courts",
+#              "matches" (open matches on Matchpoint's public match browser)
+#   "matches" also honors:
+#     "matches_start_time" / "matches_end_time" — "HH:MM" window to only notify within (both
+#                                       required together; unset means no time filter)
 #   Optional per-target instructor overrides:
 #     "excluded_instructors": [...]  — skip this target for these instructors (defaults to EXCLUDED_INSTRUCTORS)
 #     "included_instructors": [...]  — if set, ONLY notify this target for these instructors,
@@ -39,6 +44,7 @@ NOTIFY_LESSONS            = True  # private class + SPC tournaments — paused
 NOTIFY_TRAIN_AND_PLAY     = True
 NOTIFY_COURTS             = True
 NOTIFY_LAST_MINUTE_COURTS = True
+NOTIFY_MATCHES            = True
 
 WEEKS_AHEAD = 6   # check current week + this many ahead, minus 1 week to stay inside the ~41.3 day booking advance window
 ACTIVITY_FILTERS = ["private class", "train and play blue"]
@@ -275,11 +281,12 @@ def check_court_bookings(notified):
     today = datetime.now().date()
     padel_id = COURT_GRID_ID
 
-    court_targets = [
-        r["target"] for r in IMESSAGE_TARGETS if "courts" in r.get("types", [])
-    ]
+    court_recipients = [r for r in IMESSAGE_TARGETS if "courts" in r.get("types", [])]
 
     for d_offset in range(1, (WEEKS_AHEAD + 1) * 7 + 1):
+        if d_offset > 1:
+            time.sleep(0.3)
+
         dt = today + timedelta(days=d_offset)
         date_iso  = dt.strftime("%Y-%m-%d")
         date_api  = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
@@ -315,8 +322,8 @@ def check_court_bookings(notified):
                 subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
                 log(f"  NOTIFY (court): {subtitle}")
                 send_mac_notification("Court Available!", subtitle, "Free court slot")
-                send_imessage(f"Evening court free: {subtitle}", court_targets)
-                send_ntfy_notification("Court Available!", subtitle, "")
+                notify_recipients(court_recipients, f"Evening court free: {subtitle}", "Court Available!", subtitle)
+                send_ntfy_notification(NTFY_TOPIC, "Court Available!", subtitle, "")
                 new_keys.add(slot_key)
 
     return new_keys
@@ -330,8 +337,8 @@ def check_last_minute_courts(notified):
     if not NOTIFY_LAST_MINUTE_COURTS:
         return set()
 
-    targets = [r["target"] for r in IMESSAGE_TARGETS if "last_minute_courts" in r.get("types", [])]
-    if not targets:
+    last_minute_recipients = [r for r in IMESSAGE_TARGETS if "last_minute_courts" in r.get("types", [])]
+    if not last_minute_recipients:
         return set()
 
     log("  Checking last-minute court availability...")
@@ -395,9 +402,124 @@ def check_last_minute_courts(notified):
                 subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
                 log(f"  NOTIFY (last-minute court): {subtitle}")
                 send_mac_notification("Last-Minute Court!", subtitle, "Off-peak court free <24h away")
-                send_imessage(f"Buddy court free: {subtitle}", targets)
-                send_ntfy_notification("Last-Minute Court!", subtitle, "")
+                notify_recipients(last_minute_recipients, f"Buddy court free: {subtitle}", "Last-Minute Court!", subtitle)
+                send_ntfy_notification(NTFY_TOPIC, "Last-Minute Court!", subtitle, "")
                 new_keys.add(slot_key)
+
+    return new_keys
+
+
+# ---------------------------------------------------------------------------
+# Open matches (Matches/Search.aspx — player-organized games short a partner)
+# ---------------------------------------------------------------------------
+
+def _time_in_window(time_str, start_str, end_str):
+    """True if time_str falls within [start_str, end_str]; unset bounds mean no filter."""
+    if not start_str or not end_str:
+        return True
+    return _mins(start_str) <= _mins(time_str) <= _mins(end_str)
+
+
+def parse_matches(html):
+    """Parse the public 'Browser of Open Matches' page into a list of match dicts."""
+    date_positions = [
+        (m.start(), m.group(1).strip())
+        for m in re.finditer(r'LabelFechaSeparador_\d+"[^>]*>([^<]*)<', html)
+    ]
+    match_positions = [
+        (m.start(), m.group(1))
+        for m in re.finditer(r"window\.location='/Matches/Match\.aspx\?id=([a-f0-9]+)'", html)
+    ]
+
+    def date_for(pos):
+        result = ""
+        for p, d in date_positions:
+            if p <= pos:
+                result = d
+            else:
+                break
+        return result
+
+    matches = []
+    for i, (pos, match_id) in enumerate(match_positions):
+        end = match_positions[i + 1][0] if i + 1 < len(match_positions) else len(html)
+        block = html[pos:end]
+        preceding = html[max(0, pos - 1500):pos]
+
+        level_from_m = re.search(r'HiddenFieldNivelDesde"[^>]*value="([\d.]+)"', preceding)
+        level_to_m = re.search(r'HiddenFieldNivelHasta"[^>]*value="([\d.]+)"', preceding)
+        time_m = re.search(r'LabelHoraInicio_\d+"[^>]*>([\d:]+)<', block)
+        if not (level_from_m and level_to_m and time_m):
+            continue
+
+        sex_m = re.search(r'LabelSexoValor_\d+"[^>]*>\s*-?\s*([^<]+?)\s*<', block)
+        court_m = re.search(r'LabelRecurso_\d+"[^>]*>([^<]+)<', block)
+
+        matches.append({
+            "id": match_id,
+            "date": date_for(pos),
+            "time": time_m.group(1),
+            "level_from": float(level_from_m.group(1)),
+            "level_to": float(level_to_m.group(1)),
+            "sex": sex_m.group(1).strip() if sex_m else "",
+            "court": court_m.group(1).strip() if court_m else "",
+            "free_spots": block.count("icono-partida-libre"),
+        })
+
+    return matches
+
+
+def check_matches(notified):
+    """Check Matchpoint's public open-match browser for matches with free slots."""
+    if not NOTIFY_MATCHES:
+        return set()
+
+    match_recipients = [r for r in IMESSAGE_TARGETS if "matches" in r.get("types", [])]
+    if not match_recipients:
+        return set()
+
+    log("  Checking open matches...")
+    new_keys = set()
+
+    html = fetch_detail_html(BASE_URL + "/Matches/Search.aspx")
+    if not html:
+        return new_keys
+
+    for match in parse_matches(html):
+        if match["free_spots"] <= 0:
+            continue
+
+        slot_key = f"match_{match['id']}"
+        if slot_key in notified:
+            continue
+
+        eligible = [
+            r for r in match_recipients
+            if (r.get("level") is None or match["level_from"] <= r["level"] <= match["level_to"])
+            and _time_in_window(match["time"], r.get("matches_start_time"), r.get("matches_end_time"))
+        ]
+        if not eligible:
+            continue
+
+        link = f"{BASE_URL}/Matches/Match.aspx?id={match['id']}"
+        subtitle = (
+            f"{match['court']} — {match['date']}, {match['time']} "
+            f"({match['sex']}, {match['level_from']:.2f}-{match['level_to']:.2f})"
+        )
+        message = f"{match['free_spots']} spot(s) free"
+
+        log(f"  NOTIFY (match): {subtitle} ({match['free_spots']} free)")
+        send_mac_notification("Open Match Available!", subtitle, message, url=link)
+        notify_recipients(
+            eligible,
+            f"Open match free: {subtitle} · Book: {link}",
+            "Open Match Available!",
+            f"{subtitle}. {message}",
+            link,
+        )
+        send_ntfy_notification(NTFY_TOPIC, "Open Match Available!", f"{subtitle}. {message}", link)
+
+        new_keys.add(slot_key)
 
     return new_keys
 
@@ -468,18 +590,33 @@ end tell
             log(f"  iMessage error ({target}): {e}")
 
 
-def send_ntfy_notification(title, message, url):
-    if not NTFY_TOPIC:
+def send_ntfy_notification(topic, title, message, url=""):
+    if not topic:
         return
     try:
         req = urllib.request.Request(
-            f"https://ntfy.sh/{NTFY_TOPIC}",
+            f"https://ntfy.sh/{topic}",
             data=message.encode("utf-8"),
             headers={"Title": title, "Click": url, "Content-Type": "text/plain"},
         )
         urllib.request.urlopen(req, timeout=10)
     except Exception as e:
-        log(f"  ntfy notification failed: {e}")
+        log(f"  ntfy notification failed ({topic}): {e}")
+
+
+def notify_recipients(recipients, imessage_text, ntfy_title, ntfy_message, ntfy_url=""):
+    """Dispatch to each recipient via their preferred channel: ntfy if they have a
+    personal topic configured (more reliable than iMessage for phone-number handles),
+    otherwise iMessage."""
+    imessage_targets = []
+    for r in recipients:
+        topic = r.get("ntfy_topic")
+        if topic:
+            send_ntfy_notification(topic, ntfy_title, ntfy_message, ntfy_url)
+        else:
+            imessage_targets.append(r["target"])
+    if imessage_targets:
+        send_imessage(imessage_text, imessage_targets)
 
 
 # ---------------------------------------------------------------------------
@@ -518,14 +655,14 @@ def main():
         link = slot.get("Link", "")
         html = fetch_detail_html(link)
 
-        eligible_targets = [
-            r["target"] for r in IMESSAGE_TARGETS
+        eligible_recipients = [
+            r for r in IMESSAGE_TARGETS
             if alert_type in r.get("types", [])
             and target_allows_instructor(html, r, alert_type)
             and (alert_type != "train_and_play" or target_level_suitable(html, r))
         ]
 
-        if not eligible_targets:
+        if not eligible_recipients:
             log(f"  Skip (no eligible recipients — instructor/level filters): {name} — {slot.get('DiaDeLaSemana')} {slot.get('StrHoraInicio')}")
             continue
 
@@ -549,11 +686,12 @@ def main():
         if not globally_excluded:
             send_mac_notification("Padel Slot Available!", subtitle, message, url=link)
             send_ntfy_notification(
+                NTFY_TOPIC,
                 "Padel Slot Available!",
                 f"{subtitle}. {vacancies} spot(s) free.",
                 link,
             )
-        send_imessage(imsg, eligible_targets)
+        notify_recipients(eligible_recipients, imsg, "Padel Slot Available!", f"{subtitle}. {vacancies} spot(s) free.", link)
 
         new_bids.add(bid)
         notify_count += 1
@@ -561,11 +699,13 @@ def main():
     # Court hire check
     new_court_keys = check_court_bookings(notified)
     new_last_minute_keys = check_last_minute_courts(notified)
+    new_match_keys = check_matches(notified)
 
-    save_notified(notified_dict, new_bids | new_court_keys | new_last_minute_keys)
+    save_notified(notified_dict, new_bids | new_court_keys | new_last_minute_keys | new_match_keys)
     log(f"  Done — notified for {notify_count} new activity slot(s), "
         f"{len(new_court_keys)} new court slot(s), "
-        f"{len(new_last_minute_keys)} new last-minute court slot(s).")
+        f"{len(new_last_minute_keys)} new last-minute court slot(s), "
+        f"{len(new_match_keys)} new open match(es).")
 
 
 if __name__ == "__main__":

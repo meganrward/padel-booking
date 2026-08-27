@@ -8,6 +8,7 @@ const TYPE_LABELS: { key: AlertType; label: string }[] = [
   { key: "lessons", label: "Lessons" },
   { key: "train_and_play", label: "Train & Play" },
   { key: "last_minute_courts", label: "Last minute courts" },
+  { key: "matches", label: "Matches" },
 ];
 
 function emptyPerson(): Person {
@@ -48,6 +49,8 @@ export default function App() {
         excluded_instructors: next.excluded_instructors ?? undefined,
         included_instructors: next.included_instructors ?? undefined,
         apply_instructor_filter_to_train_and_play: next.apply_instructor_filter_to_train_and_play ?? false,
+        matches_start_time: next.matches_start_time ?? undefined,
+        matches_end_time: next.matches_end_time ?? undefined,
       });
     } catch (e) {
       setError((e as Error).message);
@@ -124,7 +127,7 @@ export default function App() {
                   {label}
                 </label>
               ))}
-              {person.types.includes("train_and_play") && (
+              {(person.types.includes("train_and_play") || person.types.includes("matches")) && (
                 <label className="toggle level-input">
                   Level
                   <input
@@ -137,6 +140,30 @@ export default function App() {
                       handleUpdate(person.target, {
                         level: e.target.value === "" ? null : Number(e.target.value),
                       })
+                    }
+                  />
+                </label>
+              )}
+              {person.types.includes("matches") && (
+                <label className="toggle level-input">
+                  From
+                  <input
+                    type="time"
+                    value={person.matches_start_time ?? ""}
+                    onChange={(e) =>
+                      handleUpdate(person.target, { matches_start_time: e.target.value || null })
+                    }
+                  />
+                </label>
+              )}
+              {person.types.includes("matches") && (
+                <label className="toggle level-input">
+                  To
+                  <input
+                    type="time"
+                    value={person.matches_end_time ?? ""}
+                    onChange={(e) =>
+                      handleUpdate(person.target, { matches_end_time: e.target.value || null })
                     }
                   />
                 </label>
@@ -193,7 +220,7 @@ export default function App() {
               {label}
             </label>
           ))}
-          {newPerson.types.includes("train_and_play") && (
+          {(newPerson.types.includes("train_and_play") || newPerson.types.includes("matches")) && (
             <label className="toggle level-input">
               Level
               <input
@@ -207,6 +234,30 @@ export default function App() {
                     ...p,
                     level: e.target.value === "" ? null : Number(e.target.value),
                   }))
+                }
+              />
+            </label>
+          )}
+          {newPerson.types.includes("matches") && (
+            <label className="toggle level-input">
+              From
+              <input
+                type="time"
+                value={newPerson.matches_start_time ?? ""}
+                onChange={(e) =>
+                  setNewPerson((p) => ({ ...p, matches_start_time: e.target.value || null }))
+                }
+              />
+            </label>
+          )}
+          {newPerson.types.includes("matches") && (
+            <label className="toggle level-input">
+              To
+              <input
+                type="time"
+                value={newPerson.matches_end_time ?? ""}
+                onChange={(e) =>
+                  setNewPerson((p) => ({ ...p, matches_end_time: e.target.value || null }))
                 }
               />
             </label>

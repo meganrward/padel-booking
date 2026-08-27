@@ -13,7 +13,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PEOPLE_FILE = os.path.join(REPO_ROOT, "people.json")
 INSTRUCTORS_FILE = os.path.join(REPO_ROOT, "instructors.json")
 
-AlertType = Literal["lessons", "train_and_play", "courts", "last_minute_courts"]
+AlertType = Literal["lessons", "train_and_play", "courts", "last_minute_courts", "matches"]
 
 app = FastAPI(title="Padel Booking Admin API")
 
@@ -33,6 +33,8 @@ class Person(BaseModel):
     excluded_instructors: list[str] | None = None
     included_instructors: list[str] | None = None
     apply_instructor_filter_to_train_and_play: bool = False
+    matches_start_time: str | None = None
+    matches_end_time: str | None = None
 
     @field_validator("name", "target")
     @classmethod
@@ -50,6 +52,8 @@ class PersonUpdate(BaseModel):
     excluded_instructors: list[str] | None = None
     included_instructors: list[str] | None = None
     apply_instructor_filter_to_train_and_play: bool = False
+    matches_start_time: str | None = None
+    matches_end_time: str | None = None
 
 
 def load_people() -> list[dict]:
