@@ -23548,3 +23548,7 @@ urllib.error.URLError: <urlopen error timed out>
 [2026-08-27 19:22]   Court grid fetch failed (19/9/2026): <urlopen error timed out>
 [2026-08-27 19:23]   Court grid fetch failed (24/9/2026): <urlopen error timed out>
 [2026-08-27 19:23]   Court grid fetch failed (28/9/2026): <urlopen error timed out>
+[2026-08-27 19:23]   Court grid fetch failed (9/10/2026): <urlopen error timed out>
+[2026-08-27 19:23]   Court grid fetch failed (11/10/2026): <urlopen error timed out>
+[2026-08-27 19:23]   Checking last-minute court availability...
+[2026-08-27 19:24]   Done — notified for 0 new activity slot(s), 0 new court slot(s), 0 new last-minute court slot(s), 0 new open match(es).

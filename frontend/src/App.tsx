@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react";
-import { api, type AlertType, type Person } from "./api";
-import { InstructorPicker } from "./InstructorPicker";
+import { api, type Person } from "./api";
+import { AddPersonForm } from "./components/AddPersonForm";
+import { PersonCard } from "./components/PersonCard";
 import "./App.css";
-
-const TYPE_LABELS: { key: AlertType; label: string }[] = [
-  { key: "courts", label: "Evening Courts" },
-  { key: "lessons", label: "Lessons" },
-  { key: "train_and_play", label: "Train & Play" },
-  { key: "last_minute_courts", label: "Last minute courts" },
-  { key: "matches", label: "Matches" },
-];
 
 function emptyPerson(): Person {
   return { name: "", target: "", types: [] };
@@ -58,13 +51,6 @@ export default function App() {
     }
   }
 
-  function toggleType(person: Person, type: AlertType) {
-    const types = person.types.includes(type)
-      ? person.types.filter((t) => t !== type)
-      : [...person.types, type];
-    handleUpdate(person.target, { types });
-  }
-
   async function handleDelete(target: string) {
     if (!confirm(`Remove ${target} from notifications?`)) return;
     const prev = people;
@@ -104,169 +90,17 @@ export default function App() {
 
       <div className="people-list">
         {people.map((person) => (
-          <div className="person-card" key={person.target}>
-            <div className="person-header">
-              <input
-                className="name-input"
-                value={person.name}
-                onChange={(e) => handleUpdate(person.target, { name: e.target.value })}
-              />
-              <span className="target-text">{person.target}</span>
-              <button className="delete-btn" onClick={() => handleDelete(person.target)}>
-                Remove
-              </button>
-            </div>
-            <div className="toggles">
-              {TYPE_LABELS.map(({ key, label }) => (
-                <label key={key} className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={person.types.includes(key)}
-                    onChange={() => toggleType(person, key)}
-                  />
-                  {label}
-                </label>
-              ))}
-              {(person.types.includes("train_and_play") || person.types.includes("matches")) && (
-                <label className="toggle level-input">
-                  Level
-                  <input
-                    type="number"
-                    step="0.25"
-                    min="0"
-                    placeholder="e.g. 4.25"
-                    value={person.level ?? ""}
-                    onChange={(e) =>
-                      handleUpdate(person.target, {
-                        level: e.target.value === "" ? null : Number(e.target.value),
-                      })
-                    }
-                  />
-                </label>
-              )}
-              {person.types.includes("matches") && (
-                <label className="toggle level-input">
-                  From
-                  <input
-                    type="time"
-                    value={person.matches_start_time ?? ""}
-                    onChange={(e) =>
-                      handleUpdate(person.target, { matches_start_time: e.target.value || null })
-                    }
-                  />
-                </label>
-              )}
-              {person.types.includes("matches") && (
-                <label className="toggle level-input">
-                  To
-                  <input
-                    type="time"
-                    value={person.matches_end_time ?? ""}
-                    onChange={(e) =>
-                      handleUpdate(person.target, { matches_end_time: e.target.value || null })
-                    }
-                  />
-                </label>
-              )}
-            </div>
-            <InstructorPicker
-              excluded={person.excluded_instructors}
-              included={person.included_instructors}
-              allInstructors={instructors}
-              onChange={(patch) => handleUpdate(person.target, patch)}
-            />
-            {person.types.includes("train_and_play") &&
-              (person.excluded_instructors?.length || person.included_instructors?.length) && (
-                <label className="toggle train-play-instructor-toggle">
-                  <input
-                    type="checkbox"
-                    checked={person.apply_instructor_filter_to_train_and_play ?? false}
-                    onChange={(e) =>
-                      handleUpdate(person.target, { apply_instructor_filter_to_train_and_play: e.target.checked })
-                    }
-                  />
-                  Apply instructor filter to Train &amp; Play?
-                </label>
-              )}
-          </div>
+          <PersonCard
+            key={person.target}
+            person={person}
+            instructors={instructors}
+            onChange={(patch) => handleUpdate(person.target, patch)}
+            onDelete={() => handleDelete(person.target)}
+          />
         ))}
       </div>
 
-      <form className="add-form" onSubmit={handleAdd}>
-        <h2>Add person</h2>
-        <input
-          placeholder="Name"
-          value={newPerson.name}
-          onChange={(e) => setNewPerson({ ...newPerson, name: e.target.value })}
-        />
-        <input
-          placeholder="Email or +phone"
-          value={newPerson.target}
-          onChange={(e) => setNewPerson({ ...newPerson, target: e.target.value })}
-        />
-        <div className="toggles">
-          {TYPE_LABELS.map(({ key, label }) => (
-            <label key={key} className="toggle">
-              <input
-                type="checkbox"
-                checked={newPerson.types.includes(key)}
-                onChange={() =>
-                  setNewPerson((p) => ({
-                    ...p,
-                    types: p.types.includes(key) ? p.types.filter((t) => t !== key) : [...p.types, key],
-                  }))
-                }
-              />
-              {label}
-            </label>
-          ))}
-          {(newPerson.types.includes("train_and_play") || newPerson.types.includes("matches")) && (
-            <label className="toggle level-input">
-              Level
-              <input
-                type="number"
-                step="0.25"
-                min="0"
-                placeholder="e.g. 4.25"
-                value={newPerson.level ?? ""}
-                onChange={(e) =>
-                  setNewPerson((p) => ({
-                    ...p,
-                    level: e.target.value === "" ? null : Number(e.target.value),
-                  }))
-                }
-              />
-            </label>
-          )}
-          {newPerson.types.includes("matches") && (
-            <label className="toggle level-input">
-              From
-              <input
-                type="time"
-                value={newPerson.matches_start_time ?? ""}
-                onChange={(e) =>
-                  setNewPerson((p) => ({ ...p, matches_start_time: e.target.value || null }))
-                }
-              />
-            </label>
-          )}
-          {newPerson.types.includes("matches") && (
-            <label className="toggle level-input">
-              To
-              <input
-                type="time"
-                value={newPerson.matches_end_time ?? ""}
-                onChange={(e) =>
-                  setNewPerson((p) => ({ ...p, matches_end_time: e.target.value || null }))
-                }
-              />
-            </label>
-          )}
-        </div>
-        <button type="submit" disabled={!canAddPerson}>
-          Add person
-        </button>
-      </form>
+      <AddPersonForm value={newPerson} onChange={setNewPerson} onSubmit={handleAdd} canSubmit={canAddPerson} />
     </div>
   );
 }

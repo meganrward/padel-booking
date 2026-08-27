@@ -292,14 +292,21 @@ def check_court_bookings(notified):
         date_api  = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
         date_nice = dt.strftime("%a %d %b")
 
-        try:
-            result = post_json(
-                "/booking/srvc.aspx/ObtenerCuadro",
-                {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
-                opener=opener,
-            )
-        except Exception as e:
-            log(f"  Court grid fetch failed ({date_api}): {e}")
+        result = None
+        for attempt in range(3):
+            try:
+                result = post_json(
+                    "/booking/srvc.aspx/ObtenerCuadro",
+                    {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
+                    opener=opener,
+                )
+                break
+            except Exception as e:
+                if attempt < 2:
+                    time.sleep(2 * (attempt + 1))
+                else:
+                    log(f"  Court grid fetch failed ({date_api}): {e}")
+        if result is None:
             continue
 
         d = result.get("d") or {}
