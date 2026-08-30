@@ -38,8 +38,8 @@ export function AlertTypeFields({ value, onChange }: Props) {
         </label>
       )}
       {value.types.includes("matches") && (
-        <label className="toggle level-input">
-          From
+        <label className="toggle level-input" title="Only filters open match alerts">
+          Match time from
           <input
             type="time"
             value={value.matches_start_time ?? ""}
@@ -48,8 +48,8 @@ export function AlertTypeFields({ value, onChange }: Props) {
         </label>
       )}
       {value.types.includes("matches") && (
-        <label className="toggle level-input">
-          To
+        <label className="toggle level-input" title="Only filters open match alerts">
+          Match time to
           <input
             type="time"
             value={value.matches_end_time ?? ""}

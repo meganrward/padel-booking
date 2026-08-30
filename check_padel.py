@@ -131,13 +131,17 @@ def find_available_slots(activities):
 
 
 def fetch_detail_html(link_url):
-    try:
-        req = urllib.request.Request(link_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            return resp.read().decode("utf-8", errors="replace")
-    except Exception as e:
-        log(f"  Detail page fetch failed for {link_url[:80]}: {e}")
-        return ""
+    req = urllib.request.Request(link_url, headers={"User-Agent": "Mozilla/5.0"})
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                return resp.read().decode("utf-8", errors="replace")
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2 * (attempt + 1))
+            else:
+                log(f"  Detail page fetch failed for {link_url[:80]}: {e}")
+    return ""
 
 
 def instructor_matches(html, names):
@@ -421,10 +425,16 @@ def check_last_minute_courts(notified):
 # ---------------------------------------------------------------------------
 
 def _time_in_window(time_str, start_str, end_str):
-    """True if time_str falls within [start_str, end_str]; unset bounds mean no filter."""
+    """True if time_str falls within [start_str, end_str]; unset bounds mean no filter.
+
+    end_str <= start_str (e.g. "00:00") is treated as wrapping past midnight.
+    """
     if not start_str or not end_str:
         return True
-    return _mins(start_str) <= _mins(time_str) <= _mins(end_str)
+    start, end, t = _mins(start_str), _mins(end_str), _mins(time_str)
+    if end <= start:
+        return t >= start or t <= end
+    return start <= t <= end
 
 
 def parse_matches(html):
@@ -476,6 +486,38 @@ def parse_matches(html):
     return matches
 
 
+def _matches_search_url(match_recipients):
+    """Build the Search.aspx URL, narrowing by date and time to fit under the
+    site's ~200-result cap so it reaches WEEKS_AHEAD out instead of stopping
+    after only a week or two of near-term matches.
+
+    The hora window is widened to cover every recipient's matches_start_time /
+    matches_end_time (any recipient missing a bound means no narrowing, since
+    the actual per-recipient filtering happens client-side in check_matches).
+    """
+    today = datetime.now().date()
+    params = {
+        "sexo": "todos",
+        "amigos": "false",
+        "jugado": "false",
+        "idDeporte": "undefined",
+        "nivel": "false",
+        "fechaDesde": today.strftime("%d/%m/%Y"),
+        "fechaHasta": (today + timedelta(weeks=WEEKS_AHEAD)).strftime("%d/%m/%Y"),
+        "idcentro": "undefined",
+    }
+
+    starts = [r.get("matches_start_time") for r in match_recipients]
+    ends   = [r.get("matches_end_time") for r in match_recipients]
+    if all(starts) and all(ends):
+        widest_start = min(_mins(s) for s in starts)
+        widest_end   = max(23 * 60 + 59 if _mins(e) <= widest_start else _mins(e) for e in ends)
+        params["horaDesde"] = _fmt_mins(widest_start)
+        params["horaHasta"] = _fmt_mins(widest_end)
+
+    return BASE_URL + "/Matches/Search.aspx?" + urllib.parse.urlencode(params)
+
+
 def check_matches(notified):
     """Check Matchpoint's public open-match browser for matches with free slots."""
     if not NOTIFY_MATCHES:
@@ -488,7 +530,7 @@ def check_matches(notified):
     log("  Checking open matches...")
     new_keys = set()
 
-    html = fetch_detail_html(BASE_URL + "/Matches/Search.aspx")
+    html = fetch_detail_html(_matches_search_url(match_recipients))
     if not html:
         return new_keys
 
