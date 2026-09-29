@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, type CourtSearchDuration, type CourtSlot } from "../api";
+import { Banner, Card, Field, Spinner } from "./ui";
 
 const MIN_DURATION: CourtSearchDuration = 60;
 const MAX_DURATION: CourtSearchDuration = 180;
@@ -60,74 +61,102 @@ export function FreeCourtFinder() {
     }
   }
 
+  const fillPercent = ((durationMins - MIN_DURATION) / (MAX_DURATION - MIN_DURATION)) * 100;
+  const ticks: number[] = [];
+  for (let m = MIN_DURATION; m <= MAX_DURATION; m += DURATION_STEP) ticks.push(m);
+
   return (
-    <section className="court-finder">
-      <h2>Find free courts</h2>
-      <form className="add-form" onSubmit={handleSearch}>
-        <div className="court-finder-row">
-          <label className="court-finder-field">
-            From date
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-          </label>
-          <label className="court-finder-field">
-            To date
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
-          </label>
+    <Card title="Find free courts">
+      <form className="form" onSubmit={handleSearch}>
+        <div className="field-row">
+          <Field label="From date">
+            <input className="input" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+          </Field>
+          <Field label="To date">
+            <input className="input" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+          </Field>
         </div>
-        <div className="court-finder-row">
-          <label className="court-finder-field">
-            From time
-            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
-          </label>
-          <label className="court-finder-field">
-            To time
+        <div className="field-row">
+          <Field label="From time">
+            <input className="input" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+          </Field>
+          <Field label="To time">
             <input
+              className="input"
               type="time"
               value={endTime}
               min={startTime}
               onChange={(e) => setEndTime(e.target.value)}
               required
             />
-          </label>
+          </Field>
         </div>
-        <label className="court-finder-field court-finder-duration">
-          Minimum duration: {durationMins} min
+        <div className="field">
+          <div className="slider-head">
+            <label className="field-label" htmlFor="duration-slider">
+              Minimum duration
+            </label>
+            <span className="slider-value" aria-hidden="true">
+              {durationMins} min
+            </span>
+          </div>
           <input
+            id="duration-slider"
+            className="range"
             type="range"
             min={MIN_DURATION}
             max={MAX_DURATION}
             step={DURATION_STEP}
             value={durationMins}
+            aria-valuetext={`${durationMins} minutes`}
+            style={{ "--fill": `${fillPercent}%` } as React.CSSProperties}
             onChange={(e) => setDurationMins(Number(e.target.value) as CourtSearchDuration)}
           />
-        </label>
-        <button type="submit" disabled={!canSearch || loading}>
-          {loading ? "Searching..." : "Find free courts"}
+          <div className="ticks" aria-hidden="true">
+            {ticks.map((m) => (
+              <span key={m}>{m}</span>
+            ))}
+          </div>
+        </div>
+        <button type="submit" className="btn btn-primary" disabled={!canSearch || loading} aria-busy={loading || undefined}>
+          {loading && <Spinner />}
+          {loading ? "Searching…" : "Find free courts"}
         </button>
       </form>
 
-      {error && <div className="error-banner">{error}</div>}
+      {error && <Banner tone="error">{error}</Banner>}
 
-      {results && (
-        <div className="court-results">
-          {results.length === 0 ? (
-            <p className="court-results-empty">No free courts found in that range.</p>
-          ) : (
-            groupByDate(results).map((group) => (
-              <div key={group.date_label} className="court-results-day">
-                <h3>{group.date_label}</h3>
+      {results &&
+        (results.length === 0 ? (
+          <p className="empty">No free courts found in that range.</p>
+        ) : (
+          <div className="slots">
+            {groupByDate(results).map((group) => (
+              <div key={group.date_label} className="slot-day">
+                <h3>
+                  {group.date_label}
+                  <span className="slot-count">
+                    {group.slots.length} {group.slots.length === 1 ? "slot" : "slots"}
+                  </span>
+                </h3>
                 <ul>
                   {group.slots.map((slot) => (
-                    <li key={`${slot.court}-${slot.start}`}>
-                      {slot.court} — {slot.start}–{slot.end} ({slot.duration_mins} min)
+                    <li key={`${slot.court}-${slot.start}`} className="slot">
+                      <span className="slot-dot" aria-hidden="true" />
+                      <span className="slot-main">
+                        <span className="slot-court">{slot.court}</span>
+                        <span className="slot-time">
+                          {slot.start}–{slot.end}
+                        </span>
+                      </span>
+                      <span className="slot-dur">{slot.duration_mins} min</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            ))
-          )}
-        </div>
-      )}
-    </section>
+            ))}
+          </div>
+        ))}
+    </Card>
   );
 }

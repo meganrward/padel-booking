@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Checkbox } from "./ui";
 
 type Mode = "none" | "exclude" | "include";
 
@@ -61,21 +62,28 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
   const dropdownOptions = allInstructors.filter((n) => !shown.includes(n));
 
   return (
-    <div className="instructor-picker">
-      <select value={mode} onChange={(e) => handleModeSelect(e.target.value as Mode)}>
+    <>
+      <select
+        className="select"
+        aria-label="Coach filter"
+        value={mode}
+        onChange={(e) => handleModeSelect(e.target.value as Mode)}
+      >
         <option value="none">All coaches</option>
         <option value="exclude">Exclude specific coaches</option>
         <option value="include">Only these coaches</option>
       </select>
       {mode !== "none" && (
-        <div className="instructor-picker-body">
+        <>
           <select
+            className="select"
+            aria-label="Add coach from list"
             value=""
             onChange={(e) => pickFromDropdown(e.target.value)}
             disabled={dropdownOptions.length === 0}
           >
             <option value="" disabled>
-              {dropdownOptions.length === 0 ? "All coaches added" : "Add coach..."}
+              {dropdownOptions.length === 0 ? "All coaches added" : "Add coach…"}
             </option>
             {dropdownOptions.map((name) => (
               <option key={name} value={name}>
@@ -85,30 +93,29 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
           </select>
 
           {shown.length > 0 && (
-            <div className="instructor-checklist">
+            <div className="checklist">
               {shown.map((name) => (
-                <label key={name} className="instructor-checkbox">
-                  <input type="checkbox" checked={active.includes(name)} onChange={() => toggleChecked(name)} />
-                  {name}
-                </label>
+                <Checkbox key={name} label={name} checked={active.includes(name)} onChange={() => toggleChecked(name)} />
               ))}
             </div>
           )}
 
-          <div className="instructor-add">
+          <div className="inline-add">
             <input
+              className="input"
               type="text"
+              aria-label="Instructor name"
               placeholder="Add instructor name"
               value={customName}
               onChange={(e) => setCustomName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addCustom()}
             />
-            <button type="button" onClick={addCustom}>
+            <button type="button" className="btn btn-secondary" onClick={addCustom}>
               Add
             </button>
           </div>
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 }

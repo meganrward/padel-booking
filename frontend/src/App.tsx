@@ -5,6 +5,7 @@ import { ChangePasswordForm } from "./components/ChangePasswordForm";
 import { FreeCourtFinder } from "./components/FreeCourtFinder";
 import { LoginForm } from "./components/LoginForm";
 import { PreferencesEditor } from "./components/PreferencesEditor";
+import { Banner } from "./components/ui";
 import "./App.css";
 
 export function App() {
@@ -69,12 +70,12 @@ export function App() {
     }
   }
 
-  if (loading) return <div className="page">Loading...</div>;
+  if (loading) return <div className="page page-loading">Loading…</div>;
 
   return (
-    <div className="page">
-      <h1>Padel Court Finder</h1>
-      {error && <div className="error-banner">{error}</div>}
+    <main className="page">
+      <h1 className="page-title">Padel Court Finder</h1>
+      {error && <Banner tone="error">{error}</Banner>}
 
       <FreeCourtFinder />
 
@@ -82,13 +83,15 @@ export function App() {
         <>
           <PreferencesEditor preferences={preferences} instructors={instructors} onChange={handlePreferencesChange} />
           <ChangePasswordForm />
-          <button type="button" className="sign-out-btn" onClick={handleSignOut}>
-            Log out
-          </button>
+          <div className="page-footer">
+            <button type="button" className="btn btn-quiet" onClick={handleSignOut}>
+              Log out
+            </button>
+          </div>
         </>
       ) : (
         <LoginForm onSignedIn={handleSignedIn} />
       )}
-    </div>
+    </main>
   );
 }
