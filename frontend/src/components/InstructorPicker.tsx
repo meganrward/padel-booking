@@ -63,9 +63,9 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
   return (
     <div className="instructor-picker">
       <select value={mode} onChange={(e) => handleModeSelect(e.target.value as Mode)}>
-        <option value="none">All instructors</option>
-        <option value="exclude">Exclude specific instructors</option>
-        <option value="include">Only these instructors</option>
+        <option value="none">All coaches</option>
+        <option value="exclude">Exclude specific coaches</option>
+        <option value="include">Only these coaches</option>
       </select>
       {mode !== "none" && (
         <div className="instructor-picker-body">
