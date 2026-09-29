@@ -39,7 +39,10 @@ def load_targets():
     client = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SECRET_KEY"])
     return client.table("preferences").select("*").execute().data
 
-RECIPIENTS = load_targets()
+# Populated by main() before the recipient-dependent checks run. Left empty at import
+# time so importing this module (e.g. the search-service backend, which only needs
+# find_free_courts_in_range) doesn't require Supabase credentials or a network call.
+RECIPIENTS: list[dict] = []
 
 NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone notifications
 
@@ -744,6 +747,9 @@ def notify_recipients(recipients, imessage_text, ntfy_title, ntfy_message, ntfy_
 # ---------------------------------------------------------------------------
 
 def main():
+    global RECIPIENTS
+    RECIPIENTS = load_targets()
+
     log("Checking availability...")
     weeks = get_available_weeks()
     log("  Weeks: " + ", ".join(w["StrFechaInicioSemana"] for w in weeks))
