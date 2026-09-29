@@ -36,7 +36,7 @@ export function PreferencesEditor({ preferences, instructors, onChange }: Props)
         />
         {preferences.types.includes("train_and_play") && hasInstructorFilter && (
           <Checkbox
-            label="Apply coach filter to Train & Play?"
+            label="Apply coach filter to Train & Plays?"
             checked={preferences.apply_instructor_filter_to_train_and_play}
             onChange={(checked) => onChange({ apply_instructor_filter_to_train_and_play: checked })}
           />
