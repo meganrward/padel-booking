@@ -1,5 +1,6 @@
 import type { NotificationMethod } from "../lib/preferences";
 import { generateNtfyTopic } from "../lib/preferences.utils";
+import { SegmentedControl, Topic } from "./ui";
 
 interface Props {
   name: string;
@@ -7,6 +8,11 @@ interface Props {
   ntfyTopic: string | null;
   onChange: (patch: { notification_method: NotificationMethod; ntfy_topic?: string | null }) => void;
 }
+
+const METHODS: { value: NotificationMethod; label: string }[] = [
+  { value: "imessage", label: "iMessage" },
+  { value: "ntfy", label: "ntfy" },
+];
 
 export function NotificationMethodToggle({ name, method, ntfyTopic, onChange }: Props) {
   function selectMethod(next: NotificationMethod) {
@@ -18,25 +24,8 @@ export function NotificationMethodToggle({ name, method, ntfyTopic, onChange }: 
   }
 
   return (
-    <div className="notification-method">
-      <label className="toggle">
-        <input
-          type="radio"
-          name="notification-method"
-          checked={method === "imessage"}
-          onChange={() => selectMethod("imessage")}
-        />
-        iMessage
-      </label>
-      <label className="toggle">
-        <input
-          type="radio"
-          name="notification-method"
-          checked={method === "ntfy"}
-          onChange={() => selectMethod("ntfy")}
-        />
-        ntfy
-      </label>
+    <>
+      <SegmentedControl label="Notify me by" options={METHODS} value={method} onChange={selectMethod} />
       {method === "ntfy" && ntfyTopic && (
         <div className="ntfy-setup">
           <p>
@@ -46,9 +35,9 @@ export function NotificationMethodToggle({ name, method, ntfyTopic, onChange }: 
             </a>{" "}
             and add a subscription with this exact topic name:
           </p>
-          <code>{ntfyTopic}</code>
+          <Topic value={ntfyTopic} />
         </div>
       )}
-    </div>
+    </>
   );
 }

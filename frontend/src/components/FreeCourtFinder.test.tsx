@@ -15,7 +15,7 @@ const mockedSearchCourts = vi.mocked(api.searchCourts);
 describe("FreeCourtFinder", () => {
   it("defaults the minimum duration to 90 minutes", () => {
     render(<FreeCourtFinder />);
-    expect(screen.getByText("Minimum duration: 90 min")).toBeInTheDocument();
+    expect(screen.getByText("90 min")).toBeInTheDocument();
     expect(screen.getByRole("slider")).toHaveValue("90");
   });
 
@@ -47,7 +47,7 @@ describe("FreeCourtFinder", () => {
     fireEvent.change(screen.getByLabelText("From time"), { target: { value: "18:00" } });
     fireEvent.change(screen.getByLabelText("To time"), { target: { value: "21:00" } });
     fireEvent.change(screen.getByRole("slider"), { target: { value: "150" } });
-    expect(screen.getByText("Minimum duration: 150 min")).toBeInTheDocument();
+    expect(screen.getByText("150 min")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /find free courts/i }));
 

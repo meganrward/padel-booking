@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { signInWithPassword } from "../lib/preferences";
+import { Banner, Card, Field, Spinner } from "./ui";
 
 interface Props {
   onSignedIn: () => void;
@@ -26,28 +27,34 @@ export function LoginForm({ onSignedIn }: Props) {
   }
 
   return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      <h2>Log in</h2>
-      {error && <div className="error-banner">{error}</div>}
-      <input
-        type="email"
-        placeholder="Email"
-        autoComplete="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        autoComplete="current-password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit" disabled={submitting}>
-        {submitting ? "Logging in..." : "Log in"}
-      </button>
-    </form>
+    <Card title="Log in" description="Log in to choose which alerts you get.">
+      <form className="form" onSubmit={handleSubmit}>
+        {error && <Banner tone="error">{error}</Banner>}
+        <Field label="Email">
+          <input
+            className="input"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </Field>
+        <Field label="Password">
+          <input
+            className="input"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </Field>
+        <button type="submit" className="btn btn-primary" disabled={submitting} aria-busy={submitting || undefined}>
+          {submitting && <Spinner />}
+          {submitting ? "Logging in…" : "Log in"}
+        </button>
+      </form>
+    </Card>
   );
 }

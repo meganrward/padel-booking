@@ -28,7 +28,7 @@ describe("PreferencesEditor", () => {
     const user = userEvent.setup();
 
     render(<PreferencesEditor preferences={samplePreferences()} instructors={[]} onChange={onChange} />);
-    await user.click(screen.getByLabelText("Evening Courts"));
+    await user.click(screen.getByLabelText("Evening courts"));
 
     expect(onChange).toHaveBeenCalledWith({ types: ["courts"] });
   });

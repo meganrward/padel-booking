@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateOwnPassword } from "../lib/preferences";
+import { Banner, Card, Field, Spinner } from "./ui";
 
 export function ChangePasswordForm() {
   const [open, setOpen] = useState(false);
@@ -26,28 +27,41 @@ export function ChangePasswordForm() {
 
   if (!open) {
     return (
-      <button type="button" className="change-password-toggle" onClick={() => setOpen(true)}>
-        Change password
-      </button>
+      <div className="page-footer">
+        <button type="button" className="btn btn-secondary" onClick={() => setOpen(true)}>
+          Change password
+        </button>
+      </div>
     );
   }
 
   return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      <h2>Change password</h2>
-      {error && <div className="error-banner">{error}</div>}
-      {success && <div className="success-banner">Password updated.</div>}
-      <input
-        type="password"
-        placeholder="New password"
-        autoComplete="new-password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-        required
-      />
-      <button type="submit" disabled={submitting}>
-        {submitting ? "Updating..." : "Update password"}
-      </button>
-    </form>
+    <Card
+      title="Change password"
+      actions={
+        <button type="button" className="btn btn-quiet btn-sm" onClick={() => setOpen(false)}>
+          Cancel
+        </button>
+      }
+    >
+      <form className="form" onSubmit={handleSubmit}>
+        {error && <Banner tone="error">{error}</Banner>}
+        {success && <Banner tone="success">Password updated.</Banner>}
+        <Field label="New password">
+          <input
+            className="input"
+            type="password"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+          />
+        </Field>
+        <button type="submit" className="btn btn-primary" disabled={submitting} aria-busy={submitting || undefined}>
+          {submitting && <Spinner />}
+          {submitting ? "Updating…" : "Update password"}
+        </button>
+      </form>
+    </Card>
   );
 }

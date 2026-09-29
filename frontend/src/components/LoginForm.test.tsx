@@ -17,8 +17,8 @@ describe("LoginForm", () => {
     const user = userEvent.setup();
 
     render(<LoginForm onSignedIn={onSignedIn} />);
-    await user.type(screen.getByPlaceholderText("Email"), "friend@example.com");
-    await user.type(screen.getByPlaceholderText("Password"), "hunter2");
+    await user.type(screen.getByLabelText("Email"), "friend@example.com");
+    await user.type(screen.getByLabelText("Password"), "hunter2");
     await user.click(screen.getByRole("button", { name: /log in/i }));
 
     expect(mockedSignIn).toHaveBeenCalledWith("friend@example.com", "hunter2");
@@ -31,8 +31,8 @@ describe("LoginForm", () => {
     const user = userEvent.setup();
 
     render(<LoginForm onSignedIn={onSignedIn} />);
-    await user.type(screen.getByPlaceholderText("Email"), "friend@example.com");
-    await user.type(screen.getByPlaceholderText("Password"), "wrong");
+    await user.type(screen.getByLabelText("Email"), "friend@example.com");
+    await user.type(screen.getByLabelText("Password"), "wrong");
     await user.click(screen.getByRole("button", { name: /log in/i }));
 
     expect(await screen.findByText("Invalid login credentials")).toBeInTheDocument();
