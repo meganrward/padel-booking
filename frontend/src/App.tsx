@@ -6,11 +6,15 @@ import { FreeCourtFinder } from "./components/FreeCourtFinder";
 import { LoginForm } from "./components/LoginForm";
 import { PreferencesEditor } from "./components/PreferencesEditor";
 import { Banner } from "./components/ui";
+import bundledInstructors from "./data/instructors.json";
 import "./App.css";
 
 export function App() {
   const [preferences, setPreferences] = useState<Preferences | null>(null);
-  const [instructors, setInstructors] = useState<string[]>([]);
+  // Seeded from a bundled one-time scrape so the dropdown works even when the
+  // search-service backend (Render free tier, can be asleep/unreachable) can't
+  // be reached; a successful live fetch below just refreshes it.
+  const [instructors, setInstructors] = useState<string[]>(bundledInstructors);
   const [signedIn, setSignedIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -24,12 +28,13 @@ export function App() {
     }
     setSignedIn(true);
     setPreferences(await fetchOwnPreferences());
-    // The instructor list comes from the separate search-service backend, which may not
-    // be reachable — that shouldn't block editing preferences, so it fails silently here.
+    // Try to refresh the bundled instructor list from the live search-service backend,
+    // which may not be reachable — that shouldn't block editing preferences, and the
+    // bundled list from the last scrape is a fine fallback, so failures are silent here.
     try {
       setInstructors(await api.listInstructors());
     } catch {
-      setInstructors([]);
+      // keep the bundled list
     }
   }
 

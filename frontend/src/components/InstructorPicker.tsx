@@ -26,7 +26,6 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
   // Names shown below with a checkbox this session — grows as instructors are picked,
   // never shrinks on uncheck (so unchecking is easy to undo until the page is refreshed).
   const [shown, setShown] = useState<string[]>(() => active);
-  const [customName, setCustomName] = useState("");
 
   function handleModeSelect(next: Mode) {
     setModeState(next);
@@ -50,13 +49,6 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
     if (!name) return;
     if (!shown.includes(name)) setShown((prev) => [...prev, name]);
     if (!active.includes(name)) setActive([...active, name]);
-  }
-
-  function addCustom() {
-    const name = customName.trim().toLowerCase();
-    if (!name) return;
-    pickFromDropdown(name);
-    setCustomName("");
   }
 
   const dropdownOptions = allInstructors.filter((n) => !shown.includes(n));
@@ -99,21 +91,6 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
               ))}
             </div>
           )}
-
-          <div className="inline-add">
-            <input
-              className="input"
-              type="text"
-              aria-label="Instructor name"
-              placeholder="Add instructor name"
-              value={customName}
-              onChange={(e) => setCustomName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && addCustom()}
-            />
-            <button type="button" className="btn btn-secondary" onClick={addCustom}>
-              Add
-            </button>
-          </div>
         </>
       )}
     </>
