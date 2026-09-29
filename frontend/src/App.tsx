@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type Person } from "./api";
 import { AddPersonForm } from "./components/AddPersonForm";
+import { FreeCourtFinder } from "./components/FreeCourtFinder";
 import { PersonCard } from "./components/PersonCard";
 import "./App.css";
 
@@ -87,6 +88,8 @@ export default function App() {
     <div className="page">
       <h1>Padel Notification Recipients</h1>
       {error && <div className="error-banner">{error}</div>}
+
+      <FreeCourtFinder />
 
       <div className="people-list">
         {people.map((person) => (

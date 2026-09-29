@@ -12,6 +12,22 @@ export interface Person {
   matches_end_time?: string | null;
 }
 
+export interface CourtSlot {
+  date: string;
+  date_label: string;
+  court: string;
+  start: string;
+  end: string;
+  duration_mins: number;
+}
+
+export interface CourtSearchParams {
+  start_date: string;
+  end_date: string;
+  start_time: string;
+  end_time: string;
+}
+
 const BASE_URL = "http://localhost:8000";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -39,4 +55,6 @@ export const api = {
   deletePerson: (target: string) =>
     request<void>(`/api/people/${encodeURIComponent(target)}`, { method: "DELETE" }),
   listInstructors: () => request<string[]>("/api/instructors"),
+  searchCourts: (params: CourtSearchParams) =>
+    request<CourtSlot[]>("/api/courts/search", { method: "POST", body: JSON.stringify(params) }),
 };

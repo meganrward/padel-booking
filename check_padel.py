@@ -340,6 +340,75 @@ def check_court_bookings(notified):
     return new_keys
 
 
+MAX_COURT_SEARCH_DAYS = 45  # stay inside the site's ~41.3 day booking advance window
+
+
+def find_free_courts_in_range(start_date, end_date, min_start_str, max_start_str, min_duration):
+    """One-time, on-demand scrape for free court slots over an arbitrary date range.
+
+    Unlike check_court_bookings(), this has no notification/logging/state side effects —
+    it just returns the free slots found. start_date/end_date are date objects (inclusive).
+    """
+    num_days = (end_date - start_date).days + 1
+    if num_days <= 0:
+        raise ValueError("end_date must be on or after start_date")
+    if num_days > MAX_COURT_SEARCH_DAYS:
+        raise ValueError(f"date range too large (max {MAX_COURT_SEARCH_DAYS} days)")
+
+    opener, key = _init_court_session()
+    padel_id = COURT_GRID_ID
+
+    results = []
+
+    for d_offset in range(num_days):
+        if d_offset > 0:
+            time.sleep(0.3)
+
+        dt = start_date + timedelta(days=d_offset)
+        date_iso  = dt.strftime("%Y-%m-%d")
+        date_api  = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
+        date_label = dt.strftime("%a %d %b")
+
+        result = None
+        for attempt in range(3):
+            try:
+                result = post_json(
+                    "/booking/srvc.aspx/ObtenerCuadro",
+                    {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
+                    opener=opener,
+                )
+                break
+            except Exception as e:
+                if attempt < 2:
+                    time.sleep(2 * (attempt + 1))
+                else:
+                    log(f"  Court grid fetch failed ({date_api}): {e}")
+        if result is None:
+            continue
+
+        d = result.get("d") or {}
+        columnas = d.get("Columnas") or []
+        grid_close = d.get("StrHoraFin") or "23:00"
+
+        for col in columnas:
+            court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
+            ocupaciones = col.get("Ocupaciones") or []
+
+            for free_start, free_end in _free_slots_after(
+                ocupaciones, grid_close, min_start_str, max_start_str, min_duration
+            ):
+                results.append({
+                    "date": date_iso,
+                    "date_label": date_label,
+                    "court": court_name,
+                    "start": _fmt_mins(free_start),
+                    "end": _fmt_mins(free_end),
+                    "duration_mins": free_end - free_start,
+                })
+
+    return results
+
+
 def check_last_minute_courts(notified):
     """
     Same/next-day off-peak weekday court gaps (LAST_MINUTE_OFFPEAK_START-END) of at

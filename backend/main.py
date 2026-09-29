@@ -3,6 +3,8 @@
 
 import json
 import os
+import sys
+from datetime import datetime
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
@@ -12,6 +14,11 @@ from pydantic import BaseModel, field_validator
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PEOPLE_FILE = os.path.join(REPO_ROOT, "people.json")
 INSTRUCTORS_FILE = os.path.join(REPO_ROOT, "instructors.json")
+
+sys.path.insert(0, REPO_ROOT)
+from check_padel import find_free_courts_in_range  # noqa: E402
+
+COURT_SEARCH_MIN_DURATION_MINS = 90
 
 AlertType = Literal["lessons", "train_and_play", "courts", "last_minute_courts", "matches"]
 
@@ -109,3 +116,40 @@ def list_instructors():
         return []
     with open(INSTRUCTORS_FILE) as f:
         return json.load(f)
+
+
+class CourtSearchRequest(BaseModel):
+    start_date: str  # YYYY-MM-DD
+    end_date: str    # YYYY-MM-DD
+    start_time: str  # HH:MM
+    end_time: str    # HH:MM
+
+
+class CourtSlot(BaseModel):
+    date: str
+    date_label: str
+    court: str
+    start: str
+    end: str
+    duration_mins: int
+
+
+@app.post("/api/courts/search", response_model=list[CourtSlot])
+def search_courts(req: CourtSearchRequest):
+    try:
+        start_date = datetime.strptime(req.start_date, "%Y-%m-%d").date()
+        end_date = datetime.strptime(req.end_date, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Dates must be in YYYY-MM-DD format")
+
+    if end_date < start_date:
+        raise HTTPException(status_code=400, detail="end_date must be on or after start_date")
+
+    try:
+        return find_free_courts_in_range(
+            start_date, end_date, req.start_time, req.end_time, COURT_SEARCH_MIN_DURATION_MINS
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Court search failed: {e}")

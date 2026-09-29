@@ -188,3 +188,57 @@ h1 {
   color: #888;
   cursor: not-allowed;
 }
+
+.court-finder {
+  margin-bottom: 2rem;
+}
+
+.court-finder h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.court-finder-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.court-finder-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.court-finder-field input {
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+.court-results {
+  margin-top: 1rem;
+}
+
+.court-results-empty {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.court-results-day {
+  margin-bottom: 1rem;
+}
+
+.court-results-day h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+.court-results-day ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+}
