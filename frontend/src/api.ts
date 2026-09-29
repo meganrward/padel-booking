@@ -1,17 +1,3 @@
-export type AlertType = "lessons" | "train_and_play" | "courts" | "last_minute_courts" | "matches";
-
-export interface Person {
-  name: string;
-  target: string;
-  types: AlertType[];
-  level?: number | null;
-  excluded_instructors?: string[] | null;
-  included_instructors?: string[] | null;
-  apply_instructor_filter_to_train_and_play?: boolean;
-  matches_start_time?: string | null;
-  matches_end_time?: string | null;
-}
-
 export interface CourtSlot {
   date: string;
   date_label: string;
@@ -31,7 +17,7 @@ export interface CourtSearchParams {
   duration_mins: CourtSearchDuration;
 }
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_SEARCH_SERVICE_URL;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -47,16 +33,6 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  listPeople: () => request<Person[]>("/api/people"),
-  createPerson: (person: Person) =>
-    request<Person>("/api/people", { method: "POST", body: JSON.stringify(person) }),
-  updatePerson: (target: string, person: Omit<Person, "target">) =>
-    request<Person>(`/api/people/${encodeURIComponent(target)}`, {
-      method: "PUT",
-      body: JSON.stringify(person),
-    }),
-  deletePerson: (target: string) =>
-    request<void>(`/api/people/${encodeURIComponent(target)}`, { method: "DELETE" }),
   listInstructors: () => request<string[]>("/api/instructors"),
   searchCourts: (params: CourtSearchParams) =>
     request<CourtSlot[]>("/api/courts/search", { method: "POST", body: JSON.stringify(params) }),
