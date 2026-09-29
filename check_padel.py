@@ -13,10 +13,15 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta
 
+from dotenv import load_dotenv
+from supabase import create_client
+
 # --- CONFIGURATION (edit these) ---
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# iMessage recipients — each entry specifies which alert types they receive.
+load_dotenv(os.path.join(SCRIPT_DIR, ".env"))
+
+# Recipients — each row specifies which alert types they receive.
 # alert types: "lessons", "train_and_play", "courts" (evening courts), "last_minute_courts",
 #              "matches" (open matches on Matchpoint's public match browser)
 #   "matches" also honors:
@@ -29,13 +34,12 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 #     "apply_instructor_filter_to_train_and_play": true  — by default, instructor filters only
 #                                       apply to lessons (private classes); set this to also
 #                                       apply them to train_and_play
-# Managed via people.json (edit directly, or use the admin UI in backend/ + frontend/).
+# Managed via Supabase (each friend edits their own row through the frontend).
 def load_targets():
-    path = os.path.join(SCRIPT_DIR, "people.json")
-    with open(path) as f:
-        return json.load(f)
+    client = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SECRET_KEY"])
+    return client.table("preferences").select("*").execute().data
 
-IMESSAGE_TARGETS = load_targets()
+RECIPIENTS = load_targets()
 
 NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone notifications
 
@@ -285,7 +289,7 @@ def check_court_bookings(notified):
     today = datetime.now().date()
     padel_id = COURT_GRID_ID
 
-    court_recipients = [r for r in IMESSAGE_TARGETS if "courts" in r.get("types", [])]
+    court_recipients = [r for r in RECIPIENTS if "courts" in r.get("types", [])]
 
     for d_offset in range(1, (WEEKS_AHEAD + 1) * 7 + 1):
         if d_offset > 1:
@@ -417,7 +421,7 @@ def check_last_minute_courts(notified):
     if not NOTIFY_LAST_MINUTE_COURTS:
         return set()
 
-    last_minute_recipients = [r for r in IMESSAGE_TARGETS if "last_minute_courts" in r.get("types", [])]
+    last_minute_recipients = [r for r in RECIPIENTS if "last_minute_courts" in r.get("types", [])]
     if not last_minute_recipients:
         return set()
 
@@ -592,7 +596,7 @@ def check_matches(notified):
     if not NOTIFY_MATCHES:
         return set()
 
-    match_recipients = [r for r in IMESSAGE_TARGETS if "matches" in r.get("types", [])]
+    match_recipients = [r for r in RECIPIENTS if "matches" in r.get("types", [])]
     if not match_recipients:
         return set()
 
@@ -772,7 +776,7 @@ def main():
         html = fetch_detail_html(link)
 
         eligible_recipients = [
-            r for r in IMESSAGE_TARGETS
+            r for r in RECIPIENTS
             if alert_type in r.get("types", [])
             and target_allows_instructor(html, r, alert_type)
             and (alert_type != "train_and_play" or target_level_suitable(html, r))

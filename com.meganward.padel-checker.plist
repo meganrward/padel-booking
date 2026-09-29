@@ -6,7 +6,7 @@
     <string>com.meganward.padel-checker</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/bin/python3</string>
+        <string>/Users/meganward/projects/padel-booking/.venv/bin/python3</string>
         <string>/Users/meganward/projects/padel-booking/check_padel.py</string>
     </array>
     <key>StartInterval</key>

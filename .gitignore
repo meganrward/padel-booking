@@ -4,3 +4,4 @@ padel_checker.log
 people.json
 .env
 __pycache__/
+.venv/
