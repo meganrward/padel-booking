@@ -235,14 +235,18 @@ def _init_court_session():
     return opener, key
 
 
-def _free_slots_after(ocupaciones, grid_close_str, min_start_str=None, max_start_str=None, min_duration=None):
+def _free_slots_after(
+    ocupaciones, grid_close_str, grid_open_str=None, min_start_str=None, max_start_str=None, min_duration=None
+):
     """
     Yield (start_mins, end_mins) tuples for free gaps that:
-    - start at or after min_start_str (default COURT_MIN_TIME)
+    - start at or after min_start_str (default COURT_MIN_TIME) AND at or after
+      grid_open_str (the club's actual opening time — the site reports no bookings
+      outside opening hours, which isn't the same as those hours being free)
     - start before max_start_str (default COURT_MAX_START_TIME)
     - are at least min_duration long (default COURT_MIN_DURATION_MINS)
     """
-    min_start  = _mins(min_start_str or COURT_MIN_TIME)
+    min_start  = max(_mins(min_start_str or COURT_MIN_TIME), _mins(grid_open_str or "00:00"))
     max_start  = _mins(max_start_str or COURT_MAX_START_TIME)
     min_duration = COURT_MIN_DURATION_MINS if min_duration is None else min_duration
     grid_close = _mins(grid_close_str)
@@ -323,12 +327,13 @@ def check_court_bookings(notified):
         d = result.get("d") or {}
         columnas = d.get("Columnas") or []
         grid_close = d.get("StrHoraFin") or "23:00"
+        grid_open = d.get("StrHoraInicio") or "08:00"
 
         for col in columnas:
             court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
             ocupaciones = col.get("Ocupaciones") or []
 
-            for free_start, free_end in _free_slots_after(ocupaciones, grid_close):
+            for free_start, free_end in _free_slots_after(ocupaciones, grid_close, grid_open):
                 start_str = _fmt_mins(free_start)
                 end_str   = _fmt_mins(free_end)
                 duration  = free_end - free_start
@@ -396,13 +401,14 @@ def find_free_courts_in_range(start_date, end_date, min_start_str, max_start_str
         d = result.get("d") or {}
         columnas = d.get("Columnas") or []
         grid_close = d.get("StrHoraFin") or "23:00"
+        grid_open = d.get("StrHoraInicio") or "08:00"
 
         for col in columnas:
             court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
             ocupaciones = col.get("Ocupaciones") or []
 
             for free_start, free_end in _free_slots_after(
-                ocupaciones, grid_close, min_start_str, max_start_str, min_duration
+                ocupaciones, grid_close, grid_open, min_start_str, max_start_str, min_duration
             ):
                 results.append({
                     "date": date_iso,
@@ -463,13 +469,14 @@ def check_last_minute_courts(notified):
         d = result.get("d") or {}
         columnas = d.get("Columnas") or []
         grid_close = d.get("StrHoraFin") or LAST_MINUTE_OFFPEAK_END
+        grid_open = d.get("StrHoraInicio") or LAST_MINUTE_OFFPEAK_START
 
         for col in columnas:
             court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
             ocupaciones = col.get("Ocupaciones") or []
 
             for free_start, free_end in _free_slots_after(
-                ocupaciones, grid_close,
+                ocupaciones, grid_close, grid_open,
                 min_start_str=LAST_MINUTE_OFFPEAK_START,
                 max_start_str=LAST_MINUTE_OFFPEAK_END,
                 min_duration=LAST_MINUTE_MIN_DURATION_MINS,
