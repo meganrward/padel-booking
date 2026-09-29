@@ -27,6 +27,45 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.success-banner {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #c3e6c5;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.notification-method {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+
+.ntfy-setup {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.ntfy-setup code {
+  display: inline-block;
+  background: #f4f4f4;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.change-password-toggle {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  color: #1a73e8;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
 .person-card {
   border: 1px solid #ddd;
   border-radius: 8px;

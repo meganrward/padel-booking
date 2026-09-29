@@ -1,11 +1,11 @@
-import type { AlertType, Person } from "../api";
+import type { AlertType, Preferences } from "../lib/preferences";
 import { TYPE_LABELS } from "../constants";
 
-type TypeFields = Pick<Person, "types" | "level" | "matches_start_time" | "matches_end_time">;
+type TypeFields = Pick<Preferences, "types" | "level" | "matches_start_time" | "matches_end_time">;
 
 interface Props {
   value: TypeFields;
-  onChange: (patch: Partial<Person>) => void;
+  onChange: (patch: Partial<Preferences>) => void;
 }
 
 export function AlertTypeFields({ value, onChange }: Props) {

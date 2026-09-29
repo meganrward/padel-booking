@@ -1,4 +1,4 @@
-import type { AlertType } from "./api";
+import type { AlertType } from "./lib/preferences";
 
 export const TYPE_LABELS: { key: AlertType; label: string }[] = [
   { key: "courts", label: "Evening Courts" },
