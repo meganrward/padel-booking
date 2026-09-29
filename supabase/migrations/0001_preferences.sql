@@ -13,6 +13,7 @@ create table public.preferences (
   apply_instructor_filter_to_train_and_play boolean not null default false,
   matches_start_time text,
   matches_end_time text,
+  notification_method text not null default 'imessage' check (notification_method in ('imessage', 'ntfy')),
   ntfy_topic text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

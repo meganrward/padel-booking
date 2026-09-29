@@ -1,5 +1,5 @@
 begin;
-select plan(6);
+select plan(7);
 
 -- Two fake friends; the on_auth_user_created trigger gives each an empty
 -- preferences row automatically.
@@ -11,6 +11,11 @@ values
 select is(
   (select count(*) from public.preferences)::int, 2,
   'trigger creates a preferences row per new auth user'
+);
+
+select is(
+  (select notification_method from public.preferences where id = '00000000-0000-0000-0000-000000000001'), 'imessage',
+  'new rows default to imessage until a friend opts into ntfy'
 );
 
 -- As alice: can see and edit only her own row.

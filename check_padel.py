@@ -723,14 +723,12 @@ def send_ntfy_notification(topic, title, message, url=""):
 
 
 def notify_recipients(recipients, imessage_text, ntfy_title, ntfy_message, ntfy_url=""):
-    """Dispatch to each recipient via their preferred channel: ntfy if they have a
-    personal topic configured (more reliable than iMessage for phone-number handles),
-    otherwise iMessage."""
+    """Dispatch to each recipient via their chosen notification_method (each friend
+    picks this themselves in the preferences UI)."""
     imessage_targets = []
     for r in recipients:
-        topic = r.get("ntfy_topic")
-        if topic:
-            send_ntfy_notification(topic, ntfy_title, ntfy_message, ntfy_url)
+        if r.get("notification_method") == "ntfy":
+            send_ntfy_notification(r.get("ntfy_topic"), ntfy_title, ntfy_message, ntfy_url)
         else:
             imessage_targets.append(r["target"])
     if imessage_targets:
