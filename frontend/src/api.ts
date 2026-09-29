@@ -21,11 +21,14 @@ export interface CourtSlot {
   duration_mins: number;
 }
 
+export type CourtSearchDuration = 60 | 90 | 120 | 150 | 180;
+
 export interface CourtSearchParams {
   start_date: string;
   end_date: string;
   start_time: string;
   end_time: string;
+  duration_mins: CourtSearchDuration;
 }
 
 const BASE_URL = "http://localhost:8000";

@@ -18,9 +18,8 @@ INSTRUCTORS_FILE = os.path.join(REPO_ROOT, "instructors.json")
 sys.path.insert(0, REPO_ROOT)
 from check_padel import find_free_courts_in_range  # noqa: E402
 
-COURT_SEARCH_MIN_DURATION_MINS = 90
-
 AlertType = Literal["lessons", "train_and_play", "courts", "last_minute_courts", "matches"]
+CourtSearchDuration = Literal[60, 90, 120, 150, 180]
 
 app = FastAPI(title="Padel Booking Admin API")
 
@@ -123,6 +122,7 @@ class CourtSearchRequest(BaseModel):
     end_date: str    # YYYY-MM-DD
     start_time: str  # HH:MM
     end_time: str    # HH:MM
+    duration_mins: CourtSearchDuration = 90
 
 
 class CourtSlot(BaseModel):
@@ -147,7 +147,7 @@ def search_courts(req: CourtSearchRequest):
 
     try:
         return find_free_courts_in_range(
-            start_date, end_date, req.start_time, req.end_time, COURT_SEARCH_MIN_DURATION_MINS
+            start_date, end_date, req.start_time, req.end_time, req.duration_mins
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

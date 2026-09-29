@@ -258,6 +258,16 @@ h1 {
   font-size: 0.9rem;
 }
 
+.court-finder-duration {
+  max-width: 320px;
+}
+
+.court-finder-duration input[type="range"] {
+  padding: 0;
+  border: none;
+  width: 100%;
+}
+
 .court-results {
   margin-top: 1rem;
 }

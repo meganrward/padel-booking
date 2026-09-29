@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { api, type CourtSlot } from "../api";
+import { api, type CourtSearchDuration, type CourtSlot } from "../api";
+
+const MIN_DURATION: CourtSearchDuration = 60;
+const MAX_DURATION: CourtSearchDuration = 180;
+const DURATION_STEP = 30;
+
+function todayDateString(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function groupByDate(slots: CourtSlot[]): { date_label: string; slots: CourtSlot[] }[] {
   const groups: { date_label: string; slots: CourtSlot[] }[] = [];
@@ -15,10 +27,11 @@ function groupByDate(slots: CourtSlot[]): { date_label: string; slots: CourtSlot
 }
 
 export function FreeCourtFinder() {
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState(todayDateString());
   const [endDate, setEndDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("00:00");
+  const [endTime, setEndTime] = useState("23:59");
+  const [durationMins, setDurationMins] = useState<CourtSearchDuration>(90);
   const [results, setResults] = useState<CourtSlot[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +49,7 @@ export function FreeCourtFinder() {
         end_date: endDate,
         start_time: startTime,
         end_time: endTime,
+        duration_mins: durationMins,
       });
       setResults(slots);
     } catch (err) {
@@ -67,9 +81,26 @@ export function FreeCourtFinder() {
           </label>
           <label className="court-finder-field">
             To time
-            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
+            <input
+              type="time"
+              value={endTime}
+              min={startTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              required
+            />
           </label>
         </div>
+        <label className="court-finder-field court-finder-duration">
+          Minimum duration: {durationMins} min
+          <input
+            type="range"
+            min={MIN_DURATION}
+            max={MAX_DURATION}
+            step={DURATION_STEP}
+            value={durationMins}
+            onChange={(e) => setDurationMins(Number(e.target.value) as CourtSearchDuration)}
+          />
+        </label>
         <button type="submit" disabled={!canSearch || loading}>
           {loading ? "Searching..." : "Find free courts"}
         </button>
