@@ -1,3 +1,6 @@
 launchd_stdout.log
 notified_slots.json
 padel_checker.log
+people.json
+.env
+__pycache__/
