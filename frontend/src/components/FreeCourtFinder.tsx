@@ -30,8 +30,8 @@ function groupByDate(slots: CourtSlot[]): { date_label: string; slots: CourtSlot
 export function FreeCourtFinder() {
   const [startDate, setStartDate] = useState(todayDateString());
   const [endDate, setEndDate] = useState("");
-  const [startTime, setStartTime] = useState("00:00");
-  const [endTime, setEndTime] = useState("23:59");
+  const [startTime, setStartTime] = useState("08:00");
+  const [endTime, setEndTime] = useState("23:00");
   const [durationMins, setDurationMins] = useState<CourtSearchDuration>(90);
   const [results, setResults] = useState<CourtSlot[] | null>(null);
   const [loading, setLoading] = useState(false);

@@ -19,10 +19,10 @@ describe("FreeCourtFinder", () => {
     expect(screen.getByRole("slider")).toHaveValue("90");
   });
 
-  it("defaults the time range to all day", () => {
+  it("defaults the time range to the club's opening hours", () => {
     render(<FreeCourtFinder />);
-    expect(screen.getByLabelText("From time")).toHaveValue("00:00");
-    expect(screen.getByLabelText("To time")).toHaveValue("23:59");
+    expect(screen.getByLabelText("From time")).toHaveValue("08:00");
+    expect(screen.getByLabelText("To time")).toHaveValue("23:00");
   });
 
   it("defaults the from date to today", () => {
