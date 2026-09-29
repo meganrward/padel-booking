@@ -84,8 +84,6 @@ export function App() {
 
   if (loading) return <div className="page page-loading">Loading…</div>;
 
-  const accountLabel = signedIn && preferences ? "My alerts" : "Log in";
-
   return (
     <main className="page" data-tab={tab}>
       <h1 className="page-title">Padel Court Finder</h1>
@@ -116,7 +114,7 @@ export function App() {
         onChange={selectTab}
         tabs={[
           { value: "find", label: "Find courts", controls: "pane-find" },
-          { value: "account", label: accountLabel, controls: "pane-account" },
+          { value: "account", label: "My alerts", controls: "pane-account" },
         ]}
       />
     </main>
