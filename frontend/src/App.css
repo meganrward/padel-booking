@@ -20,15 +20,10 @@
   display: flex;
   justify-content: flex-start;
 }
-@media (max-width: 480px) {
-  .page {
-    padding-top: var(--space-6);
-    gap: var(--space-5);
-  }
-  .page-title {
-    font-size: 32px;
-    line-height: 36px;
-  }
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
 /* Card */
@@ -208,13 +203,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-4);
-}
-.inline-add {
-  display: flex;
-  gap: var(--space-2);
-}
-.inline-add .input {
-  flex: 1;
 }
 
 /* Banner */
@@ -566,4 +554,149 @@
 }
 .copy-btn:hover {
   background: var(--court-soft);
+}
+
+/* Tab bar — phones only */
+.tab-bar {
+  display: none;
+}
+
+/* ---------- Phones (≤ 599px) ----------
+   One section at a time behind a bottom tab bar, full-width actions,
+   16px inputs (stops iOS zooming on focus), 44px+ touch targets. */
+@media (max-width: 599px) {
+  .page {
+    padding: var(--space-5) var(--space-3) calc(72px + var(--space-5) + env(safe-area-inset-bottom));
+    padding-left: max(var(--space-3), env(safe-area-inset-left));
+    padding-right: max(var(--space-3), env(safe-area-inset-right));
+    gap: var(--space-4);
+  }
+  .page-title {
+    font-size: 28px;
+    line-height: 32px;
+    padding: 0 var(--space-2);
+  }
+  .pane {
+    gap: var(--space-4);
+  }
+  .page[data-tab="find"] .pane-account,
+  .page[data-tab="account"] .pane-find {
+    display: none;
+  }
+
+  .card {
+    padding: var(--space-5) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  .card-title {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .input,
+  .select,
+  .input[type="time"],
+  .input[type="date"],
+  .input[type="number"] {
+    font-size: 16px;
+    min-height: 48px;
+    padding: 0 var(--space-3);
+  }
+  .select {
+    padding-right: 36px;
+  }
+  .field-row {
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .btn {
+    min-height: 48px;
+  }
+  .form > .btn,
+  .page-footer .btn {
+    align-self: stretch;
+    width: 100%;
+  }
+  .page-footer {
+    flex-direction: column;
+  }
+
+  .chip {
+    min-height: 44px;
+  }
+  .segmented {
+    align-self: stretch;
+  }
+  .segment {
+    flex: 1;
+  }
+  .segment span {
+    min-width: 0;
+    padding: var(--space-3) var(--space-2);
+  }
+  .range {
+    height: 44px;
+  }
+  .check {
+    min-height: 32px;
+    align-items: center;
+  }
+  .check input {
+    margin-top: 0;
+  }
+
+  .slot {
+    gap: var(--space-3);
+  }
+  .slot-main {
+    flex-direction: column;
+  }
+  .copy-btn {
+    min-height: 40px;
+  }
+
+  .tab-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    padding: 0 var(--space-2) env(safe-area-inset-bottom);
+    background: var(--surface-raised);
+    border-top: 1px solid var(--line);
+    box-shadow: var(--shadow-raised);
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    min-height: 64px;
+    border: 0;
+    background: transparent;
+    color: var(--ink-muted);
+    font: 600 14px/20px var(--font-sans);
+    cursor: pointer;
+  }
+  .tab-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+  }
+  .tab[aria-current="page"] {
+    color: var(--ink);
+  }
+  .tab[aria-current="page"] .tab-dot {
+    background: var(--ball);
+    border-color: var(--on-ball);
+  }
+  .tab:focus-visible {
+    outline-offset: -4px;
+    border-radius: var(--radius-md);
+  }
 }

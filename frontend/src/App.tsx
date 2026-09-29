@@ -5,7 +5,7 @@ import { ChangePasswordForm } from "./components/ChangePasswordForm";
 import { FreeCourtFinder } from "./components/FreeCourtFinder";
 import { LoginForm } from "./components/LoginForm";
 import { PreferencesEditor } from "./components/PreferencesEditor";
-import { Banner } from "./components/ui";
+import { Banner, TabBar } from "./components/ui";
 import bundledInstructors from "./data/instructors.json";
 import "./App.css";
 
@@ -18,6 +18,13 @@ export function App() {
   const [signedIn, setSignedIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  // Mobile only: which half of the page is showing. Wider screens show both, stacked.
+  const [tab, setTab] = useState<"find" | "account">("find");
+
+  function selectTab(next: "find" | "account") {
+    setTab(next);
+    window.scrollTo({ top: 0 });
+  }
 
   async function loadPreferences() {
     const user = await getCurrentUser();
@@ -77,26 +84,41 @@ export function App() {
 
   if (loading) return <div className="page page-loading">Loading…</div>;
 
+  const accountLabel = signedIn && preferences ? "My alerts" : "Log in";
+
   return (
-    <main className="page">
+    <main className="page" data-tab={tab}>
       <h1 className="page-title">Padel Court Finder</h1>
       {error && <Banner tone="error">{error}</Banner>}
 
-      <FreeCourtFinder />
+      <div className="pane pane-find" id="pane-find">
+        <FreeCourtFinder />
+      </div>
 
-      {signedIn && preferences ? (
-        <>
-          <PreferencesEditor preferences={preferences} instructors={instructors} onChange={handlePreferencesChange} />
-          <ChangePasswordForm />
-          <div className="page-footer">
-            <button type="button" className="btn btn-quiet" onClick={handleSignOut}>
-              Log out
-            </button>
-          </div>
-        </>
-      ) : (
-        <LoginForm onSignedIn={handleSignedIn} />
-      )}
+      <div className="pane pane-account" id="pane-account">
+        {signedIn && preferences ? (
+          <>
+            <PreferencesEditor preferences={preferences} instructors={instructors} onChange={handlePreferencesChange} />
+            <ChangePasswordForm />
+            <div className="page-footer">
+              <button type="button" className="btn btn-quiet" onClick={handleSignOut}>
+                Log out
+              </button>
+            </div>
+          </>
+        ) : (
+          <LoginForm onSignedIn={handleSignedIn} />
+        )}
+      </div>
+
+      <TabBar
+        value={tab}
+        onChange={selectTab}
+        tabs={[
+          { value: "find", label: "Find courts", controls: "pane-find" },
+          { value: "account", label: accountLabel, controls: "pane-account" },
+        ]}
+      />
     </main>
   );
 }

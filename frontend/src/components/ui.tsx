@@ -139,3 +139,32 @@ export function Topic({ value }: { value: string }) {
     </div>
   );
 }
+
+/** Bottom tab bar — shown on phones only (see .tab-bar in App.css); desktop shows every pane. */
+export function TabBar<T extends string>({
+  tabs,
+  value,
+  onChange,
+}: {
+  tabs: { value: T; label: string; controls: string }[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <nav className="tab-bar" aria-label="Sections">
+      {tabs.map((t) => (
+        <button
+          key={t.value}
+          type="button"
+          className="tab"
+          aria-controls={t.controls}
+          aria-current={value === t.value ? "page" : undefined}
+          onClick={() => onChange(t.value)}
+        >
+          <span className="tab-dot" aria-hidden="true" />
+          {t.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
