@@ -163,6 +163,7 @@
 .input,
 .select {
   width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 0 var(--space-4);
   border: 1px solid var(--control-border);
@@ -170,6 +171,11 @@
   background: var(--surface-raised);
   color: var(--ink);
   font: 400 15px/22px var(--font-sans);
+}
+.input[type="date"],
+.input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
 }
 .input::placeholder {
   color: var(--ink-muted);
