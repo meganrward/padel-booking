@@ -75,7 +75,7 @@ export function InstructorPicker({ excluded, included, allInstructors, onChange 
             disabled={dropdownOptions.length === 0}
           >
             <option value="" disabled>
-              {dropdownOptions.length === 0 ? "All instructors added" : "Add instructor..."}
+              {dropdownOptions.length === 0 ? "All coaches added" : "Add coach..."}
             </option>
             {dropdownOptions.map((name) => (
               <option key={name} value={name}>

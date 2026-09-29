@@ -66,6 +66,10 @@ h1 {
   font-size: 0.9rem;
 }
 
+.sign-out-btn {
+  margin-left: 0.75rem;
+}
+
 .person-card {
   border: 1px solid #ddd;
   border-radius: 8px;

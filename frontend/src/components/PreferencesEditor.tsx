@@ -35,7 +35,7 @@ export function PreferencesEditor({ preferences, instructors, onChange }: Props)
               checked={preferences.apply_instructor_filter_to_train_and_play}
               onChange={(e) => onChange({ apply_instructor_filter_to_train_and_play: e.target.checked })}
             />
-            Apply instructor filter to Train &amp; Play?
+            Apply coach filter to Train &amp; Play?
           </label>
         )}
       <NotificationMethodToggle

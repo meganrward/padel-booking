@@ -82,7 +82,7 @@ export function App() {
         <>
           <PreferencesEditor preferences={preferences} instructors={instructors} onChange={handlePreferencesChange} />
           <ChangePasswordForm />
-          <button type="button" onClick={handleSignOut}>
+          <button type="button" className="sign-out-btn" onClick={handleSignOut}>
             Log out
           </button>
         </>
