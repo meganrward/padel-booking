@@ -175,7 +175,6 @@
   color: var(--ink-muted);
 }
 .input[type="time"],
-.input[type="date"],
 .input[type="number"] {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -606,7 +605,7 @@
     padding-right: 36px;
   }
   .field-row {
-    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--space-3);
   }
 
