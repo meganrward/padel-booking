@@ -11,6 +11,7 @@ import time
 import traceback
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
@@ -378,6 +379,56 @@ def check_court_bookings(notified):
 
 
 MAX_COURT_SEARCH_DAYS = 45  # stay inside the site's ~41.3 day booking advance window
+COURT_SEARCH_WORKERS = 6  # concurrent day fetches; keep modest to avoid hammering the booking site
+
+
+def _fetch_day_free_slots(opener, key, padel_id, dt, min_start_str, max_start_str, min_duration):
+    """Fetch and compute free slots for a single day. Returns a list of slot dicts."""
+    date_iso = dt.strftime("%Y-%m-%d")
+    date_api = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
+    date_label = dt.strftime("%a %d %b")
+
+    result = None
+    for attempt in range(3):
+        try:
+            result = post_json(
+                "/booking/srvc.aspx/ObtenerCuadro",
+                {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
+                opener=opener,
+            )
+            break
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2 * (attempt + 1))
+            else:
+                log(f"  Court grid fetch failed ({date_api}): {e}")
+    if result is None:
+        return []
+
+    d = result.get("d") or {}
+    columnas = d.get("Columnas") or []
+    grid_close = d.get("StrHoraFin") or "23:00"
+    grid_open = d.get("StrHoraInicio") or "08:00"
+
+    day_results = []
+    for col in columnas:
+        court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
+        ocupaciones = col.get("Ocupaciones") or []
+
+        for free_start, free_end in _free_slots_after(
+            ocupaciones, grid_close, grid_open, min_start_str, max_start_str, min_duration
+        ):
+            day_results.append({
+                "date": date_iso,
+                "date_label": date_label,
+                "court": court_name,
+                "start": _fmt_mins(free_start),
+                "end": _fmt_mins(free_end),
+                "duration_mins": free_end - free_start,
+            })
+
+    day_results.sort(key=lambda r: r["start"])
+    return day_results
 
 
 def find_free_courts_in_range(start_date, end_date, min_start_str, max_start_str, min_duration):
@@ -395,54 +446,23 @@ def find_free_courts_in_range(start_date, end_date, min_start_str, max_start_str
     opener, key = _init_court_session()
     padel_id = COURT_GRID_ID
 
+    days = [start_date + timedelta(days=d_offset) for d_offset in range(num_days)]
+    results_by_day = {}
+
+    with ThreadPoolExecutor(max_workers=COURT_SEARCH_WORKERS) as executor:
+        future_to_day = {
+            executor.submit(
+                _fetch_day_free_slots, opener, key, padel_id, dt, min_start_str, max_start_str, min_duration
+            ): dt
+            for dt in days
+        }
+        for future in as_completed(future_to_day):
+            dt = future_to_day[future]
+            results_by_day[dt] = future.result()
+
     results = []
-
-    for d_offset in range(num_days):
-        if d_offset > 0:
-            time.sleep(0.3)
-
-        dt = start_date + timedelta(days=d_offset)
-        date_iso  = dt.strftime("%Y-%m-%d")
-        date_api  = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
-        date_label = dt.strftime("%a %d %b")
-
-        result = None
-        for attempt in range(3):
-            try:
-                result = post_json(
-                    "/booking/srvc.aspx/ObtenerCuadro",
-                    {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
-                    opener=opener,
-                )
-                break
-            except Exception as e:
-                if attempt < 2:
-                    time.sleep(2 * (attempt + 1))
-                else:
-                    log(f"  Court grid fetch failed ({date_api}): {e}")
-        if result is None:
-            continue
-
-        d = result.get("d") or {}
-        columnas = d.get("Columnas") or []
-        grid_close = d.get("StrHoraFin") or "23:00"
-        grid_open = d.get("StrHoraInicio") or "08:00"
-
-        for col in columnas:
-            court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
-            ocupaciones = col.get("Ocupaciones") or []
-
-            for free_start, free_end in _free_slots_after(
-                ocupaciones, grid_close, grid_open, min_start_str, max_start_str, min_duration
-            ):
-                results.append({
-                    "date": date_iso,
-                    "date_label": date_label,
-                    "court": court_name,
-                    "start": _fmt_mins(free_start),
-                    "end": _fmt_mins(free_end),
-                    "duration_mins": free_end - free_start,
-                })
+    for dt in days:
+        results.extend(results_by_day.get(dt, []))
 
     return results
 
