@@ -35,9 +35,34 @@ load_dotenv(os.path.join(SCRIPT_DIR, ".env"))
 #                                       apply to lessons (private classes); set this to also
 #                                       apply them to train_and_play
 # Managed via Supabase (each friend edits their own row through the frontend).
+_supabase_client = None
+
+
+def get_client():
+    global _supabase_client
+    if _supabase_client is None:
+        _supabase_client = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SECRET_KEY"])
+    return _supabase_client
+
+
 def load_targets():
-    client = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SECRET_KEY"])
-    return client.table("preferences").select("*").execute().data
+    return get_client().table("preferences").select("*").execute().data
+
+
+def log_run(started_at, slots_available, activities_notified, court_slots_notified,
+            last_minute_court_slots_notified, matches_notified, error=None):
+    try:
+        get_client().table("run_log").insert({
+            "started_at": started_at.isoformat(),
+            "slots_available": slots_available,
+            "activities_notified": activities_notified,
+            "court_slots_notified": court_slots_notified,
+            "last_minute_court_slots_notified": last_minute_court_slots_notified,
+            "matches_notified": matches_notified,
+            "error": error,
+        }).execute()
+    except Exception:
+        log(f"  Failed to write run_log:\n{traceback.format_exc()}")
 
 # Populated by main() before the recipient-dependent checks run. Left empty at import
 # time so importing this module (e.g. the search-service backend, which only needs
@@ -755,6 +780,7 @@ def notify_recipients(recipients, imessage_text, ntfy_title, ntfy_message, ntfy_
 
 def main():
     global RECIPIENTS
+    started_at = datetime.now()
     RECIPIENTS = load_targets()
 
     log("Checking availability...")
@@ -840,10 +866,15 @@ def main():
         f"{len(new_last_minute_keys)} new last-minute court slot(s), "
         f"{len(new_match_keys)} new open match(es).")
 
+    log_run(started_at, len(all_available), notify_count, len(new_court_keys),
+             len(new_last_minute_keys), len(new_match_keys))
+
 
 if __name__ == "__main__":
     try:
         main()
     except Exception:
-        log(f"ERROR:\n{traceback.format_exc()}")
+        error = traceback.format_exc()
+        log(f"ERROR:\n{error}")
+        log_run(datetime.now(), 0, 0, 0, 0, 0, error=error)
         sys.exit(1)
