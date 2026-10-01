@@ -1,8 +1,9 @@
 import type { AlertType, Preferences } from "../lib/preferences";
+import { isEligibleForAdvancedTraining } from "../lib/preferences.utils";
 import { TYPE_LABELS } from "../constants";
 import { Chip, Field } from "./ui";
 
-type TypeFields = Pick<Preferences, "types" | "level" | "matches_start_time" | "matches_end_time">;
+type TypeFields = Pick<Preferences, "types" | "level" | "gender" | "matches_start_time" | "matches_end_time">;
 
 interface Props {
   value: TypeFields;
@@ -17,13 +18,21 @@ export function AlertTypeFields({ value, onChange }: Props) {
     onChange({ types });
   }
 
-  const showLevel = value.types.includes("train_and_play") || value.types.includes("matches");
+  const showLevel =
+    value.types.includes("train_and_play") ||
+    value.types.includes("matches") ||
+    value.types.includes("advanced_training");
   const showMatchTimes = value.types.includes("matches");
+
+  const eligibleForAdvancedTraining = isEligibleForAdvancedTraining(value.gender, value.level);
+  const visibleTypeLabels = TYPE_LABELS.filter(
+    ({ key }) => key !== "advanced_training" || eligibleForAdvancedTraining || value.types.includes("advanced_training"),
+  );
 
   return (
     <>
       <div className="chip-row" role="group" aria-label="Alert types">
-        {TYPE_LABELS.map(({ key, label }) => (
+        {visibleTypeLabels.map(({ key, label }) => (
           <Chip key={key} label={label} checked={value.types.includes(key)} onChange={() => toggleType(key)} />
         ))}
       </div>

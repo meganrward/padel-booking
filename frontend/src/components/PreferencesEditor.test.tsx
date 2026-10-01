@@ -11,6 +11,7 @@ function samplePreferences(overrides: Partial<Preferences> = {}): Preferences {
     target: "megan@example.com",
     types: [],
     level: null,
+    gender: null,
     excluded_instructors: null,
     included_instructors: null,
     apply_instructor_filter_to_train_and_play: false,
@@ -58,5 +59,47 @@ describe("PreferencesEditor", () => {
 
     expect(screen.getByText("padel-megan-ab12cd")).toBeInTheDocument();
     expect(screen.getByText(/install the/i)).toBeInTheDocument();
+  });
+
+  it("hides the Advanced Training chip when gender/level make the user ineligible", () => {
+    const onChange = vi.fn();
+
+    render(
+      <PreferencesEditor
+        preferences={samplePreferences({ gender: "male", level: 4 })}
+        instructors={[]}
+        onChange={onChange}
+      />,
+    );
+
+    expect(screen.queryByLabelText("Train to Compete")).not.toBeInTheDocument();
+  });
+
+  it("shows the Advanced Training chip when gender/level make the user eligible", () => {
+    const onChange = vi.fn();
+
+    render(
+      <PreferencesEditor
+        preferences={samplePreferences({ gender: "female", level: 4 })}
+        instructors={[]}
+        onChange={onChange}
+      />,
+    );
+
+    expect(screen.getByLabelText("Train to Compete")).toBeInTheDocument();
+  });
+
+  it("keeps showing the Advanced Training chip if already selected, even if now ineligible", () => {
+    const onChange = vi.fn();
+
+    render(
+      <PreferencesEditor
+        preferences={samplePreferences({ gender: "male", level: 3, types: ["advanced_training"] })}
+        instructors={[]}
+        onChange={onChange}
+      />,
+    );
+
+    expect(screen.getByLabelText("Train to Compete")).toBeInTheDocument();
   });
 });

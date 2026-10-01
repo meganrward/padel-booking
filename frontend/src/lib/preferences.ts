@@ -1,7 +1,13 @@
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
 
-export type AlertType = "lessons" | "train_and_play" | "courts" | "last_minute_courts" | "matches";
+export type AlertType =
+  | "lessons"
+  | "train_and_play"
+  | "advanced_training"
+  | "courts"
+  | "last_minute_courts"
+  | "matches";
 export type NotificationMethod = "imessage" | "ntfy";
 
 export interface Preferences {
@@ -10,6 +16,7 @@ export interface Preferences {
   target: string;
   types: AlertType[];
   level: number | null;
+  gender: "male" | "female" | null; // admin-set in Supabase only; never written from this app
   excluded_instructors: string[] | null;
   included_instructors: string[] | null;
   apply_instructor_filter_to_train_and_play: boolean;
@@ -20,7 +27,7 @@ export interface Preferences {
 }
 
 const PREFERENCES_COLUMNS =
-  "id, name, target, types, level, excluded_instructors, included_instructors, " +
+  "id, name, target, types, level, gender, excluded_instructors, included_instructors, " +
   "apply_instructor_filter_to_train_and_play, matches_start_time, matches_end_time, " +
   "notification_method, ntfy_topic";
 

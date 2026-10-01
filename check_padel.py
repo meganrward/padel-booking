@@ -23,8 +23,9 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(SCRIPT_DIR, ".env"))
 
 # Recipients — each row specifies which alert types they receive.
-# alert types: "lessons", "train_and_play", "courts" (evening courts), "last_minute_courts",
-#              "matches" (open matches on Matchpoint's public match browser)
+# alert types: "lessons", "train_and_play", "advanced_training" (Advanced Training / Train
+#              to Compete — level-filtered, never coach-filtered), "courts" (evening courts),
+#              "last_minute_courts", "matches" (open matches on Matchpoint's public match browser)
 #   "matches" also honors:
 #     "matches_start_time" / "matches_end_time" — "HH:MM" window to only notify within (both
 #                                       required together; unset means no time filter)
@@ -75,12 +76,13 @@ NTFY_TOPIC = ""       # e.g. "megan-padel-abc123" — leave empty to skip phone 
 # Toggle alert types on/off independently
 NOTIFY_LESSONS            = True  # private class + SPC tournaments — paused
 NOTIFY_TRAIN_AND_PLAY     = True
+NOTIFY_ADVANCED_TRAINING  = True
 NOTIFY_COURTS             = True
 NOTIFY_LAST_MINUTE_COURTS = True
 NOTIFY_MATCHES            = True
 
 WEEKS_AHEAD = 6   # check current week + this many ahead, minus 1 week to stay inside the ~41.3 day booking advance window
-ACTIVITY_FILTERS = ["private class", "train and play blue"]
+ACTIVITY_FILTERS = ["private class", "train and play blue", "train to compete"]
 EXCLUDED_INSTRUCTORS = ["lucas burgess", "richard pratt", "megan  ward" ]
 STATE_FILE = os.path.join(SCRIPT_DIR, "notified_slots.json")
 LOG_FILE = os.path.join(SCRIPT_DIR, "padel_checker.log")
@@ -152,6 +154,8 @@ def get_activity_alert_type(name):
     n = name.strip().lower()
     if "train and play blue" in n:
         return "train_and_play"
+    if "train to compete" in n:
+        return "advanced_training"
     return "lessons"
 
 
@@ -191,7 +195,10 @@ def target_allows_instructor(html, target, alert_type):
 
     Only applies to train_and_play if the target has opted in via
     apply_instructor_filter_to_train_and_play — otherwise train_and_play is unfiltered.
+    advanced_training is never instructor-filtered (no opt-in).
     """
+    if alert_type == "advanced_training":
+        return True
     if alert_type == "train_and_play" and not target.get("apply_instructor_filter_to_train_and_play"):
         return True
     included = target.get("included_instructors")
@@ -202,7 +209,8 @@ def target_allows_instructor(html, target, alert_type):
 
 
 def target_level_suitable(html, target):
-    """Per-target level filter for train_and_play: only applies if the target has a "level" set."""
+    """Per-target level filter for train_and_play / advanced_training: only applies if
+    the target has a "level" set."""
     level = target.get("level")
     if level is None:
         return True
@@ -825,6 +833,8 @@ def main():
             continue
         if alert_type == "train_and_play" and not NOTIFY_TRAIN_AND_PLAY:
             continue
+        if alert_type == "advanced_training" and not NOTIFY_ADVANCED_TRAINING:
+            continue
 
         bid = get_slot_id(slot)
         if bid in notified:
@@ -838,7 +848,7 @@ def main():
             r for r in RECIPIENTS
             if alert_type in r.get("types", [])
             and target_allows_instructor(html, r, alert_type)
-            and (alert_type != "train_and_play" or target_level_suitable(html, r))
+            and (alert_type not in ("train_and_play", "advanced_training") or target_level_suitable(html, r))
         ]
 
         if not eligible_recipients:
