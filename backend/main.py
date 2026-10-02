@@ -21,7 +21,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INSTRUCTORS_FILE = os.path.join(REPO_ROOT, "instructors.json")
 
 sys.path.insert(0, REPO_ROOT)
-from check_padel import find_free_courts_in_range  # noqa: E402
+from check_padel import find_free_courts_in_range, log_run  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("padel_search")
@@ -79,6 +79,7 @@ def search_courts(req: CourtSearchRequest):
     if end_date < start_date:
         raise HTTPException(status_code=400, detail="end_date must be on or after start_date")
 
+    started_at = datetime.now()
     started = time.monotonic()
     logger.info(
         "Court search started: %s to %s, %s-%s, min %smin",
@@ -95,8 +96,10 @@ def search_courts(req: CourtSearchRequest):
     except Exception as e:
         elapsed = time.monotonic() - started
         logger.exception("Court search failed after %.2fs", elapsed)
+        log_run(started_at, 0, 0, 0, 0, 0, error=str(e))
         raise HTTPException(status_code=502, detail=f"Court search failed: {e}")
 
     elapsed = time.monotonic() - started
     logger.info("Court search finished in %.2fs: %d slot(s) found", elapsed, len(results))
+    log_run(started_at, len(results), 0, 0, 0, 0)
     return results
