@@ -62,6 +62,9 @@ def log_run(started_at, slots_available, activities_notified, court_slots_notifi
             "last_minute_court_slots_notified": last_minute_court_slots_notified,
             "matches_notified": matches_notified,
             "error": error,
+            # Set to "cron" via PADEL_TRIGGER_SOURCE in the launchd plist; any other
+            # invocation (e.g. Megan running the script by hand) defaults to "manual".
+            "trigger_source": os.environ.get("PADEL_TRIGGER_SOURCE", "manual"),
         }).execute()
     except Exception:
         log(f"  Failed to write run_log:\n{traceback.format_exc()}")
