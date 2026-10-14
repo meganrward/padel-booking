@@ -16,6 +16,7 @@ vi.mock("./supabaseClient", () => ({
       updateUser: vi.fn(),
       signOut: vi.fn(),
       getUser: vi.fn(),
+      getSession: vi.fn(),
     },
     from: vi.fn(),
   },
@@ -88,14 +89,14 @@ describe("getCurrentUser", () => {
 
 describe("fetchOwnPreferences", () => {
   it("throws when nobody is signed in", async () => {
-    mockedSupabase.auth.getUser.mockResolvedValue({ data: { user: null }, error: null } as never);
+    mockedSupabase.auth.getSession.mockResolvedValue({ data: { session: null }, error: null } as never);
 
     await expect(fetchOwnPreferences()).rejects.toThrow("Not signed in");
   });
 
   it("fetches the signed-in user's preferences row", async () => {
-    mockedSupabase.auth.getUser.mockResolvedValue({
-      data: { user: { id: "user-1" } },
+    mockedSupabase.auth.getSession.mockResolvedValue({
+      data: { session: { user: { id: "user-1" } } },
       error: null,
     } as never);
 
@@ -114,8 +115,8 @@ describe("fetchOwnPreferences", () => {
 
 describe("updateOwnPreferences", () => {
   it("updates only the signed-in user's own row", async () => {
-    mockedSupabase.auth.getUser.mockResolvedValue({
-      data: { user: { id: "user-1" } },
+    mockedSupabase.auth.getSession.mockResolvedValue({
+      data: { session: { user: { id: "user-1" } } },
       error: null,
     } as never);
 

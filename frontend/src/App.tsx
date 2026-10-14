@@ -35,20 +35,22 @@ export function App() {
     }
     setSignedIn(true);
     setPreferences(await fetchOwnPreferences());
-    // Try to refresh the bundled instructor list from the live search-service backend,
-    // which may not be reachable — that shouldn't block editing preferences, and the
-    // bundled list from the last scrape is a fine fallback, so failures are silent here.
-    try {
-      setInstructors(await api.listInstructors());
-    } catch {
+  }
+
+  // Try to refresh the bundled instructor list from the live search-service backend,
+  // which may not be reachable (Render free tier can be asleep, taking tens of seconds
+  // to wake) — fire-and-forget so it never blocks initial render or sign-in.
+  function refreshInstructors() {
+    api.listInstructors().then(setInstructors).catch(() => {
       // keep the bundled list
-    }
+    });
   }
 
   useEffect(() => {
     loadPreferences()
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
+    refreshInstructors();
   }, []);
 
   async function handleSignedIn() {
@@ -61,6 +63,7 @@ export function App() {
     } finally {
       setLoading(false);
     }
+    refreshInstructors();
   }
 
   async function handleSignOut() {

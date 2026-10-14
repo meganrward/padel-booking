@@ -54,9 +54,13 @@ export async function getCurrentUser(): Promise<User | null> {
 }
 
 async function requireCurrentUserId(): Promise<string> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("Not signed in");
-  return user.id;
+  // Reads from local storage instead of round-tripping to the Supabase auth
+  // server; getCurrentUser() already validated the session for this load.
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) throw new Error("Not signed in");
+  return session.user.id;
 }
 
 export async function fetchOwnPreferences(): Promise<Preferences> {
