@@ -184,9 +184,13 @@ def fetch_detail_html(link_url):
     return ""
 
 
+def _normalise_whitespace(text):
+    return " ".join(text.split())
+
+
 def instructor_matches(html, names):
-    h = html.lower()
-    return any(name in h for name in names)
+    h = _normalise_whitespace(html.lower())
+    return any(_normalise_whitespace(name.lower()) in h for name in names)
 
 
 def is_excluded_instructor(html):
@@ -231,7 +235,7 @@ def get_date_from_link(link):
 
 def get_instructor_from_html(html):
     match = re.search(r'LabelMonitor[^>]*>([^<]+)<', html)
-    return match.group(1).strip() if match else ""
+    return _normalise_whitespace(match.group(1)) if match else ""
 
 
 def get_slot_id(activity):
@@ -335,56 +339,29 @@ def check_court_bookings(notified):
 
     court_recipients = [r for r in RECIPIENTS if "courts" in r.get("types", [])]
 
-    for d_offset in range(1, (WEEKS_AHEAD + 1) * 7 + 1):
-        if d_offset > 1:
-            time.sleep(0.3)
+    days = [today + timedelta(days=d_offset) for d_offset in range(1, (WEEKS_AHEAD + 1) * 7 + 1)]
 
-        dt = today + timedelta(days=d_offset)
-        date_iso  = dt.strftime("%Y-%m-%d")
-        date_api  = f"{dt.day}/{dt.month}/{dt.year}"  # D/M/YYYY (no zero-pad), matches JS
-        date_nice = dt.strftime("%a %d %b")
+    with ThreadPoolExecutor(max_workers=COURT_SEARCH_WORKERS) as executor:
+        slots_by_day = list(executor.map(
+            lambda dt: _fetch_day_free_slots(opener, key, padel_id, dt, None, None, None), days
+        ))
 
-        result = None
-        for attempt in range(3):
-            try:
-                result = post_json(
-                    "/booking/srvc.aspx/ObtenerCuadro",
-                    {"idCuadro": str(padel_id), "fecha": date_api, "key": key},
-                    opener=opener,
-                )
-                break
-            except Exception as e:
-                if attempt < 2:
-                    time.sleep(2 * (attempt + 1))
-                else:
-                    log(f"  Court grid fetch failed ({date_api}): {e}")
-        if result is None:
-            continue
+    for slots in slots_by_day:
+        for slot in slots:
+            slot_key = f"court_{padel_id}_{slot['date']}_{slot['court']}_{slot['start'].replace(':', '')}"
 
-        d = result.get("d") or {}
-        columnas = d.get("Columnas") or []
-        grid_close = d.get("StrHoraFin") or "23:00"
-        grid_open = d.get("StrHoraInicio") or "08:00"
+            if slot_key in notified:
+                continue
 
-        for col in columnas:
-            court_name = col.get("TextoPrincipal") or col.get("TextoSecundario") or "Court"
-            ocupaciones = col.get("Ocupaciones") or []
-
-            for free_start, free_end in _free_slots_after(ocupaciones, grid_close, grid_open):
-                start_str = _fmt_mins(free_start)
-                end_str   = _fmt_mins(free_end)
-                duration  = free_end - free_start
-                slot_key  = f"court_{padel_id}_{date_iso}_{court_name}_{start_str.replace(':', '')}"
-
-                if slot_key in notified:
-                    continue
-
-                subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
-                log(f"  NOTIFY (court): {subtitle}")
-                send_mac_notification("Court Available!", subtitle, "Free court slot")
-                notify_recipients(court_recipients, f"Evening court free: {subtitle}", "Court Available!", subtitle)
-                send_ntfy_notification(NTFY_TOPIC, "Court Available!", subtitle, "")
-                new_keys.add(slot_key)
+            subtitle = (
+                f"{slot['court']} — {slot['date_label']}, {slot['start']}–{slot['end']} "
+                f"({slot['duration_mins']} min)"
+            )
+            log(f"  NOTIFY (court): {subtitle}")
+            send_mac_notification("Court Available!", subtitle, "Free court slot")
+            notify_recipients(court_recipients, f"Evening court free: {subtitle}", "Court Available!", subtitle)
+            send_ntfy_notification(NTFY_TOPIC, "Court Available!", subtitle, "")
+            new_keys.add(slot_key)
 
     return new_keys
 
