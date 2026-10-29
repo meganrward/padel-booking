@@ -12,7 +12,7 @@ import traceback
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from dotenv import load_dotenv
 from supabase import create_client
@@ -87,7 +87,6 @@ NOTIFY_MATCHES            = True
 WEEKS_AHEAD = 6   # check current week + this many ahead, minus 1 week to stay inside the ~41.3 day booking advance window
 ACTIVITY_FILTERS = ["private class", "train and play blue", "train to compete"]
 EXCLUDED_INSTRUCTORS = ["lucas burgess", "richard pratt", "megan  ward" ]
-STATE_FILE = os.path.join(SCRIPT_DIR, "notified_slots.json")
 LOG_FILE = os.path.join(SCRIPT_DIR, "padel_checker.log")
 
 # Court booking config
@@ -350,7 +349,8 @@ def check_court_bookings(notified):
         for slot in slots:
             slot_key = f"court_{padel_id}_{slot['date']}_{slot['court']}_{slot['start'].replace(':', '')}"
 
-            if slot_key in notified:
+            claimed, owner_claimed = claim_notifications(notified, slot_key, court_recipients)
+            if not claimed and not owner_claimed:
                 continue
 
             subtitle = (
@@ -358,9 +358,10 @@ def check_court_bookings(notified):
                 f"({slot['duration_mins']} min)"
             )
             log(f"  NOTIFY (court): {subtitle}")
-            send_mac_notification("Court Available!", subtitle, "Free court slot")
-            notify_recipients(court_recipients, f"Evening court free: {subtitle}", "Court Available!", subtitle)
-            send_ntfy_notification(NTFY_TOPIC, "Court Available!", subtitle, "")
+            if owner_claimed:
+                send_mac_notification("Court Available!", subtitle, "Free court slot")
+                send_ntfy_notification(NTFY_TOPIC, "Court Available!", subtitle, "")
+            notify_recipients(claimed, f"Evening court free: {subtitle}", "Court Available!", subtitle)
             new_keys.add(slot_key)
 
     return new_keys
@@ -523,14 +524,16 @@ def check_last_minute_courts(notified):
                 duration  = free_end - free_start
                 slot_key  = f"lastmin_{padel_id}_{dt.isoformat()}_{court_name}_{start_str.replace(':', '')}"
 
-                if slot_key in notified:
+                claimed, owner_claimed = claim_notifications(notified, slot_key, last_minute_recipients)
+                if not claimed and not owner_claimed:
                     continue
 
                 subtitle = f"{court_name} — {date_nice}, {start_str}–{end_str} ({duration} min)"
                 log(f"  NOTIFY (last-minute court): {subtitle}")
-                send_mac_notification("Last-Minute Court!", subtitle, "Off-peak court free <24h away")
-                notify_recipients(last_minute_recipients, f"Buddy court free: {subtitle}", "Last-Minute Court!", subtitle)
-                send_ntfy_notification(NTFY_TOPIC, "Last-Minute Court!", subtitle, "")
+                if owner_claimed:
+                    send_mac_notification("Last-Minute Court!", subtitle, "Off-peak court free <24h away")
+                    send_ntfy_notification(NTFY_TOPIC, "Last-Minute Court!", subtitle, "")
+                notify_recipients(claimed, f"Buddy court free: {subtitle}", "Last-Minute Court!", subtitle)
                 new_keys.add(slot_key)
 
     return new_keys
@@ -655,15 +658,18 @@ def check_matches(notified):
             continue
 
         slot_key = f"match_{match['id']}"
-        if slot_key in notified:
-            continue
+        pending, _ = pending_notifications(notified, slot_key, match_recipients)
 
         eligible = [
-            r for r in match_recipients
+            r for r in pending
             if (r.get("level") is None or match["level_from"] <= r["level"] <= match["level_to"])
             and _time_in_window(match["time"], r.get("matches_start_time"), r.get("matches_end_time"))
         ]
         if not eligible:
+            continue
+
+        claimed, owner_claimed = claim_notifications(notified, slot_key, eligible)
+        if not claimed and not owner_claimed:
             continue
 
         link = f"{BASE_URL}/Matches/Match.aspx?id={match['id']}"
@@ -674,15 +680,16 @@ def check_matches(notified):
         message = f"{match['free_spots']} spot(s) free"
 
         log(f"  NOTIFY (match): {subtitle} ({match['free_spots']} free)")
-        send_mac_notification("Open Match Available!", subtitle, message, url=link)
+        if owner_claimed:
+            send_mac_notification("Open Match Available!", subtitle, message, url=link)
+            send_ntfy_notification(NTFY_TOPIC, "Open Match Available!", f"{subtitle}. {message}", link)
         notify_recipients(
-            eligible,
+            claimed,
             f"Open match free: {subtitle} · Book: {link}",
             "Open Match Available!",
             f"{subtitle}. {message}",
             link,
         )
-        send_ntfy_notification(NTFY_TOPIC, "Open Match Available!", f"{subtitle}. {message}", link)
 
         new_keys.add(slot_key)
 
@@ -694,28 +701,55 @@ def check_matches(notified):
 # ---------------------------------------------------------------------------
 
 NOTIFIED_EXPIRY_DAYS = 28  # re-notify about a slot after this many days
+NOTIFIED_PAGE_SIZE = 1000
+OWNER_ID = "owner"
 
 
 def load_notified():
-    """Return (active_ids, full_dict). Entries older than NOTIFIED_EXPIRY_DAYS are dropped."""
-    if not os.path.exists(STATE_FILE):
-        return set(), {}
-    with open(STATE_FILE) as f:
-        data = json.load(f)
-    # Migrate old list format — stamp everything as notified now so nothing re-fires immediately
-    if isinstance(data, list):
-        data = {bid: datetime.now().isoformat() for bid in data}
-    cutoff = datetime.now() - timedelta(days=NOTIFIED_EXPIRY_DAYS)
-    fresh = {bid: ts for bid, ts in data.items()
-             if datetime.fromisoformat(ts) > cutoff}
-    return set(fresh), fresh
+    """Return the set of (slot_key, recipient_id) pairs already notified. Entries older
+    than NOTIFIED_EXPIRY_DAYS are deleted first."""
+    cutoff = datetime.now(timezone.utc) - timedelta(days=NOTIFIED_EXPIRY_DAYS)
+    table = get_client().table("notified_slots")
+    table.delete().lt("notified_at", cutoff.isoformat()).execute()
+
+    pairs = set()
+    start = 0
+    while True:
+        rows = (
+            table.select("slot_key, recipient_id")
+            .order("slot_key").order("recipient_id")
+            .range(start, start + NOTIFIED_PAGE_SIZE - 1)
+            .execute().data
+        )
+        pairs.update((row["slot_key"], row["recipient_id"]) for row in rows)
+        if len(rows) < NOTIFIED_PAGE_SIZE:
+            return pairs
+        start += NOTIFIED_PAGE_SIZE
 
 
-def save_notified(existing_dict, new_bids):
-    now = datetime.now().isoformat()
-    merged = {**existing_dict, **{bid: now for bid in new_bids}}
-    with open(STATE_FILE, "w") as f:
-        json.dump(merged, f, indent=2, sort_keys=True)
+def pending_notifications(notified, slot_key, recipients):
+    """Return (recipients not yet notified about slot_key, whether the owner is pending)."""
+    pending = [r for r in recipients if (slot_key, r["id"]) not in notified]
+    return pending, (slot_key, OWNER_ID) not in notified
+
+
+def claim_notifications(notified, slot_key, recipients, include_owner=True):
+    """Atomically claim slot_key for each recipient (and the owner). Returns
+    (recipients this run may notify, whether this run may notify the owner). The insert
+    is the claim: a pair another run already holds is not returned."""
+    pending, owner_pending = pending_notifications(notified, slot_key, recipients)
+    claim_owner = include_owner and owner_pending
+    ids = [r["id"] for r in pending] + ([OWNER_ID] if claim_owner else [])
+    if not ids:
+        return [], False
+
+    rows = [{"slot_key": slot_key, "recipient_id": rid} for rid in ids]
+    result = get_client().table("notified_slots").upsert(
+        rows, on_conflict="slot_key,recipient_id", ignore_duplicates=True
+    ).execute()
+    won = {row["recipient_id"] for row in result.data}
+    notified.update((slot_key, rid) for rid in ids)
+    return [r for r in pending if r["id"] in won], OWNER_ID in won
 
 
 def send_mac_notification(title, subtitle, message, url=""):
@@ -802,8 +836,7 @@ def main():
 
     log(f"  {len(all_available)} available target slot(s) (before detail checks)")
 
-    notified, notified_dict = load_notified()
-    new_bids = set()
+    notified = load_notified()
     notify_count = 0
 
     for slot in all_available:
@@ -817,7 +850,10 @@ def main():
             continue
 
         bid = get_slot_id(slot)
-        if bid in notified:
+        pending, _ = pending_notifications(
+            notified, bid, [r for r in RECIPIENTS if alert_type in r.get("types", [])]
+        )
+        if not pending:
             continue
 
         name = slot.get("Actividad", "").strip()
@@ -825,9 +861,8 @@ def main():
         html = fetch_detail_html(link)
 
         eligible_recipients = [
-            r for r in RECIPIENTS
-            if alert_type in r.get("types", [])
-            and target_allows_instructor(html, r, alert_type)
+            r for r in pending
+            if target_allows_instructor(html, r, alert_type)
             and (alert_type not in ("train_and_play", "advanced_training") or target_level_suitable(html, r))
         ]
 
@@ -835,7 +870,11 @@ def main():
             log(f"  Skip (no eligible recipients — instructor/level filters): {name} — {slot.get('DiaDeLaSemana')} {slot.get('StrHoraInicio')}")
             continue
 
-        globally_excluded = is_excluded_instructor(html)
+        claimed, owner_claimed = claim_notifications(
+            notified, bid, eligible_recipients, include_owner=not is_excluded_instructor(html)
+        )
+        if not claimed and not owner_claimed:
+            continue
 
         t_start = slot.get("StrHoraInicio", "")
         t_end = slot.get("StrHoraFin", "")
@@ -852,7 +891,7 @@ def main():
         imsg += f" · Book: {link}"
 
         log(f"  NOTIFY: {subtitle} ({vacancies} free)")
-        if not globally_excluded:
+        if owner_claimed:
             send_mac_notification("Padel Slot Available!", subtitle, message, url=link)
             send_ntfy_notification(
                 NTFY_TOPIC,
@@ -860,9 +899,8 @@ def main():
                 f"{subtitle}. {vacancies} spot(s) free.",
                 link,
             )
-        notify_recipients(eligible_recipients, imsg, "Padel Slot Available!", f"{subtitle}. {vacancies} spot(s) free.", link)
+        notify_recipients(claimed, imsg, "Padel Slot Available!", f"{subtitle}. {vacancies} spot(s) free.", link)
 
-        new_bids.add(bid)
         notify_count += 1
 
     # Court hire check
@@ -870,7 +908,6 @@ def main():
     new_last_minute_keys = check_last_minute_courts(notified)
     new_match_keys = check_matches(notified)
 
-    save_notified(notified_dict, new_bids | new_court_keys | new_last_minute_keys | new_match_keys)
     log(f"  Done — notified for {notify_count} new activity slot(s), "
         f"{len(new_court_keys)} new court slot(s), "
         f"{len(new_last_minute_keys)} new last-minute court slot(s), "

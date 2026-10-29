@@ -55,7 +55,7 @@ python3 ~/personal/padel-booking/check_padel.py
 
 ### Notes
 
-- `notified_slots.json` tracks which slots you've already been alerted about so you don't get duplicate notifications. Keep this file — if it's missing the script will re-notify for all currently open slots.
+- The Supabase `notified_slots` table tracks which slots each person has already been alerted about, so nobody gets duplicate notifications (it's keyed per person, so a person who becomes eligible later is still notified). Rows expire after 28 days. Apply `supabase/migrations/0005_notified_slots.sql` before running, and run `python3 scripts/migrate_notified_slots.py` once to carry over an existing `notified_slots.json`.
 - The script uses the system `python3` (no virtualenv needed, stdlib only).
 - Alert recipients and types are configured in `people.json`, loaded by `check_padel.py` at startup. Edit the file directly, or use the admin UI below.
 
